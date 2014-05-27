@@ -312,3 +312,25 @@ table.dataTable thead .sorting:after {
     width: 145px;
     height: 20px;
 }
+.searchTable{
+    font: 12px/1.5 tahoma, arial,微软雅黑,宋体;
+    font-size: 12px;
+    line-height: 15px;
+}
+.Edit{
+    width: 116px;
+    height: 17px;
+    border: 1px solid #B7B7B7;
+    box-shadow: 0px 2px 2px #fff;
+    padding: 1px;
+    background-color: #ffffff;
+}
+.ItemLabel{
+    white-space: nowrap;
+    padding-left: 8px;
+    /*padding-top: 3px;*/
+    padding-right: 8px;
+}
+.ItemControl{
+    padding-right: 6px;
+}

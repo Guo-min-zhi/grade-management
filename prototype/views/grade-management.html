@@ -6,7 +6,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Start Bootstrap - SB Admin Version 2.0 Demo</title>
+    <title>英语成绩管理系统</title>
 
     <!-- Core CSS - Include with every page -->
     <link href="../css/bootstrap.min.css" rel="stylesheet">
@@ -35,7 +35,7 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="index.html">SB Admin v2.0</a>
+                <a class="navbar-brand" href="index.html">英语成绩管理系统</a>
             </div>
             <!-- /.navbar-header -->
 
@@ -210,53 +210,85 @@
                 <!-- /.col-lg-12 -->
             </div>
 
-            <div class="row queryBar">
-                <div class="col-lg-12">
-                    <label for="">学号：</label>
-                    <input type="text" class="queryInput">
-                    <label for="">姓名：</label>
-                    <input type="text" class="queryInput">
-                    <label for="">成绩来源：</label>
-                    <input type="text" class="queryInput">
-                    <label for="">状态：</label>
-                    <input type="text" class="queryInput">
-                    <br>
-                    <label for="">开始时间：</label>
-                    <input type="text" class="queryInput">
-                    <label for="">结束时间：</label>
-                    <input type="text" class="queryInput">
-                </div>
-            </div>
-            <!-- /.row -->
             <div class="row">
                 <div class="col-lg-12">
-                    <div class="panel panel-info">
-                        <div class="panel-heading">成绩导入</div>
-                        <div class="panel-body">
-                            
-                        </div>
-                    </div>
+                    <table class="searchTable">
+                        <tr>
+                            <td class="ItemLabel">学号</td>
+                            <td class="ItemControl">
+                                <input type="text" class="Edit">
+                            </td>
+                            <td class="ItemLabel">姓名</td>
+                            <td class="ItemControl">
+                                <input type="text" class="Edit">
+                            </td>
+                            <td class="ItemLabel">成绩来源</td>
+                            <td class="ItemControl">
+                                <select name="" id="" class="Edit">
+                                    <option value="">四六级</option>
+                                    <option value="">机电班</option>
+                                </select>
+                            </td>
+                            <td class="ItemLabel">开始时间</td>
+                            <td class="ItemControl">
+                                <input type="text" class="Edit">
+                            </td>
+                            <td class="ItemLabel">结束时间</td>
+                            <td class="ItemControl">
+                                <input type="text" class="Edit">
+                            </td>
+                            <td>
+                                <button class="btn btn-primary btn-xs">查询</button>
+                            </td>
+                        </tr>
+                    </table>
                 </div>
+                <hr>
             </div>
             <!-- /.row -->
             <div class="row">
                 <div class="col-lg-12">
                     <div class="panel panel-default">
-                        <div class="panel-heading">
-                            信息
-                        </div>
+                        <div class="panel-heading"><button class="btn btn-primary btn-xs">导出</button></div>
                         <div class="panel-body">
-                            <p>
-                                这个区域，根据上述类型的选择，动态显示以下内容：
-                            </p>
-                            <p>
-                                1、  综合成绩的公式 （该公式由管理员在后台设置）
-                            </p>
-
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr class="success">
+                                        <td>
+                                            <input type="checkbox">
+                                        </td>
+                                        <td>行号</td>
+                                        <td>姓名</td>
+                                        <td>学号</td>
+                                        <td>成绩</td>
+                                        <td>类型</td>
+                                        <td>删除</td>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <input type="checkbox">
+                                        </td>
+                                        <td>1</td>
+                                        <td>LILI</td>
+                                        <td>13126077</td>
+                                        <td>98</td>
+                                        <td>CET4</td>
+                                        <td>
+                                            <button type="button" class="btn btn-default btn-xs">
+                                              <span class="glyphicon glyphicon-remove"></span>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                 </div>
             </div>
+            <!-- /.row -->
+            
         </div>
         <!-- /#page-wrapper -->
 
