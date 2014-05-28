@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+	debug="true" 	启动时输出配置加载信息
+	scan="true" 	默认每分钟自动扫描
+	scanPeriod="30 seconds" 设置每30秒自动扫描,若没有指定具体单位则以milliseconds为标准(单位:milliseconds, seconds, minutes or hours)
+-->
+	<configuration scan="true" scanPeriod="10 seconds">
+
+	<contextName>egms</contextName>
+	
+	<property name="LOG_HOME" value="./log" />
+	
+	<!-- 输出非本平台的日志信息 -->
+	<appender name="console" class="ch.qos.logback.core.ConsoleAppender">
+		<encoder charset="UTF-8">
+			<pattern>%-10t %-8date{yyyy-MM-dd HH:mm:ss.SSS} |-%-5level %-32logger{32} - %msg%n</pattern>
+		</encoder>
+	</appender>
+	
+	<appender name="fileAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>${LOG_HOME}/certificate_business.log</file>
+		<layout class="ch.qos.logback.classic.PatternLayout">
+			<pattern>%-10t %-8date{yyyy-MM-dd HH:mm:ss.SSS} |-%-5level %-32logger{32} - %msg%n</pattern>
+		</layout>
+
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<fileNamePattern>${LOG_HOME}/certificate_business-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+			<maxHistory>30</maxHistory>
+			<timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+				<maxFileSize>2MB</maxFileSize>
+			</timeBasedFileNamingAndTriggeringPolicy>
+		</rollingPolicy>		
+	</appender>
+	
+	<appender name="asyncFileAppender" class="ch.qos.logback.classic.AsyncAppender">
+		<discardingThreshold>0</discardingThreshold>
+		<queueSize>5120</queueSize>
+		<appender-ref ref="fileAppender" />  		
+	</appender>
+	
+	<appender name="noneBusinessFileAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>${LOG_HOME}/no_business.log</file>
+		<layout class="ch.qos.logback.classic.PatternLayout">
+			<pattern>%-10t %-8date{yyyy-MM-dd HH:mm:ss.SSS} |-%-5level %-32logger{32} - %msg%n</pattern>
+		</layout>
+
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<fileNamePattern>${LOG_HOME}/no_business-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+			<maxHistory>30</maxHistory>
+			<timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+				<maxFileSize>2MB</maxFileSize>
+			</timeBasedFileNamingAndTriggeringPolicy>
+		</rollingPolicy>		
+	</appender>
+	
+	<logger name="jdbc" level="ERROR"></logger>
+	
+	<logger name="org.bjtuse.egms" level="INFO">
+		<appender-ref ref="asyncFileAppender"/>
+	</logger>
+	
+	<root level="INFO">
+		<appender-ref ref="console"/>
+		<appender-ref ref="noneBusinessFileAppender"/>
+	</root>
+</configuration>
