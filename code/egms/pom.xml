@@ -1,15 +1,14 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
-
   <groupId>org.bjtuse.egms</groupId>
   <artifactId>egms</artifactId>
-  <version>0.0.1</version>
   <packaging>war</packaging>
-
-  <name>org::bjtuse::egms</name>
-
-  <properties>
+  <version>0.0.1</version>
+  <name>egms Maven Webapp</name>
+  <url>http://maven.apache.org</url>
+  
+	<properties>
 		<!-- 开发环境 -->
 		<lombok.version>0.12.0</lombok.version>
 		
@@ -44,6 +43,7 @@
 		<jdbc.driver.artifactId>mysql-connector-java</jdbc.driver.artifactId>
 		<jdbc.driver.version>5.1.21</jdbc.driver.version>
 	</properties>
+	
 	<dependencies>
 		<!-- SPRING basic begin(一般不需要显式定义) -->
 		<dependency>
@@ -360,6 +360,7 @@
         	<version>${lombok.version}</version>
         </dependency>
 	</dependencies>
+	
 	<build>
 		<plugins>
 			<!-- compiler插件, 设定JDK版本 -->
@@ -392,4 +393,5 @@
 			</plugin>
 		</plugins>
 	</build>
+  
 </project>
