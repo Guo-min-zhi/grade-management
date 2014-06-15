@@ -3,6 +3,7 @@
 <link type="text/css" rel="stylesheet" href="${staticFile}/css/plugins/upload/jquery.fileupload.css" />
 <link type="text/css" rel="stylesheet" href="${staticFile}/css/plugins/upload/jquery.fileupload-ui.css" />
 <link type="text/css" rel="stylesheet" href="${staticFile}/css/sb-admin.css" />
+<link type="text/css" rel="stylesheet" href="${staticFile}/css/jqpagination.css" />
 
 <%-- <link type="text/css" rel="stylesheet" href="${staticFile}/css/jqpagination.css" />
 <link type="text/css" rel="stylesheet" href="${staticFile}/css/bootstrap-datetimepicker.min.css" />
