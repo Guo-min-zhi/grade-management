@@ -121,13 +121,13 @@
 											<td><c:out value="${student.college }" /></td>
 											<td><c:out value="${student.major }" /></td>
 											<td>
-												<a href="${ctx }/admin/studentManage/delete/${student.id}" class="btn btn-warning btn-xs delete-item">
-													<span class="glyphicon glyphicon-remove"></span>&nbsp;删除
-												</a>
-												&nbsp;
 												<a class="btn btn-primary btn-xs edit" data-id="${student.id}">
                                                		<span class="glyphicon glyphicon-pencil"></span>&nbsp;修改
                                                	</a>
+												&nbsp;
+												<a href="${ctx }/admin/studentManage/delete/${student.id}" class="btn btn-warning btn-xs delete-item">
+													<span class="glyphicon glyphicon-remove"></span>&nbsp;删除
+												</a>
 											</td>
 										</tr>
 									</c:forEach>

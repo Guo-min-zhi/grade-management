@@ -26,8 +26,9 @@
 					<span class="fa arrow"></span>
 				</a>
 				<ul class="nav nav-second-level">
-					<li><a href="#">Second Level Item</a></li>
-					<li><a href="#">Second Level Item</a></li>
+					<li><a href="${ctx }/admin/parameterManage/gradeTypeList">成绩类型管理</a></li>
+					<li><a href="${ctx }/admin/parameterManage/formulaList">公式设置</a></li>
+					<li><a href="https://java.net/projects/eval/pages/Home" target="_blank">公式编写帮助文档</a></li>
 				</ul> <!-- /.nav-second-level -->
 			</li>
 		</ul>

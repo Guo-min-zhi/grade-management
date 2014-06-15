@@ -31,6 +31,15 @@
                     	<a class="btn btn-xs btn-success" id="create" title="添加教师">
 				     		<span class="glyphicon glyphicon-plus-sign"></span>
 				     	</a>
+				     	
+				     	<form action="${ctx }/admin/teacherManage/exportExcel" method="post">
+					     	<a href="${ctx }/admin/teacherManage/batchImport" class="btn btn-primary btn-xs">
+					     		<span class="glyphicon glyphicon-import"></span>&nbsp;批量导入
+					     	</a>
+							<button type="submit" class="btn btn-primary btn-xs">
+								<span class="glyphicon glyphicon-export"></span>&nbsp;导出教师信息
+							</button>
+						</form>
                     </h1>
                 </div>
                 <!-- /.col-lg-12 -->
@@ -92,13 +101,13 @@
 											<td><c:out value="${teacher.loginName }" /></td>
 											<td><c:out value="${teacher.name }" /></td>
 											<td>
-												<a href="${ctx }/admin/teacherManage/delete/${teacher.id}" class="btn btn-warning btn-xs delete-item">
-													<span class="glyphicon glyphicon-remove"></span>&nbsp;删除
-												</a>
-												&nbsp;
 												<a class="btn btn-primary btn-xs edit" data-id="${teacher.id}">
                                                		<span class="glyphicon glyphicon-pencil"></span>&nbsp;修改
                                                	</a>
+												&nbsp;
+												<a href="${ctx }/admin/teacherManage/delete/${teacher.id}" class="btn btn-warning btn-xs delete-item">
+													<span class="glyphicon glyphicon-remove"></span>&nbsp;删除
+												</a>
 											</td>
 										</tr>
 									</c:forEach>
