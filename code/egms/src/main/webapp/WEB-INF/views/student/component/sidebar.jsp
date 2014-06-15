@@ -1,0 +1,32 @@
+<%@ page language="java" contentType="text/html; charset=utf-8"
+	pageEncoding="utf-8"%>
+
+<nav class="navbar-default navbar-static-side" role="navigation">
+	<div class="sidebar-collapse">
+		<ul class="nav" id="side-menu">
+			<li>
+				<a href="${ctx }/student/certificate">
+					<i class="fa fa-bar-chart-o fa-fw"></i> 证书录入
+				</a>
+			</li>
+			<li>
+				<a href="${ctx }/student/check">
+					<i class="fa fa-bar-chart-o fa-fw"></i> 成绩查看
+				</a>
+			</li>
+			<li id="personalInfo">
+				<a href="#">
+					<i class="fa fa-sitemap fa-fw"></i> 个人信息
+					<span class="fa arrow"></span>
+				</a>
+				<ul class="nav nav-second-level">
+					<li><a href="${ctx }/student/info">完善个人信息</a></li>
+					<li><a href="${ctx }/student/photo">上传近照</a></li>
+					<li><a href="${ctx }/student/password">修改密码</a></li>
+				</ul> <!-- /.nav-second-level -->
+			</li>
+		</ul>
+		<!-- /#side-menu -->
+	</div>
+	<!-- /.sidebar-collapse -->
+</nav>

@@ -12,8 +12,8 @@
 <script type="text/javascript" src="${staticFile}/js/jquery.fileupload.js"></script>
 <script type="text/javascript" src="${staticFile}/js/main.js"></script>
 
-<%-- <script type="text/javascript" src="${staticFile}/uploadify/jquery.uploadify.min.js"></script>
+<script type="text/javascript" src="${staticFile}/uploadify/jquery.uploadify.min.js"></script>
 <script type="text/javascript" src="${staticFile}/js/bootstrap-datetimepicker.min.js"></script>
 <script type="text/javascript" src="${staticFile}/js/main.js"></script>
 <script type="text/javascript" src="${staticFile}/js/jquery.validate.js"></script>
-<script type="text/javascript" src="${staticFile}/js/jquery.placeholder.js"></script> --%>
+<script type="text/javascript" src="${staticFile}/js/jquery.placeholder.js"></script>
