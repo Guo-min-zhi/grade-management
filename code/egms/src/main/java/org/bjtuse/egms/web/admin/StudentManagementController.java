@@ -8,13 +8,14 @@ import javax.servlet.http.HttpServletResponse;
 
 import lombok.extern.slf4j.Slf4j;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.shiro.crypto.hash.Md5Hash;
 import org.bjtuse.egms.repository.entity.Student;
+import org.bjtuse.egms.service.RoleTypeManager;
 import org.bjtuse.egms.service.StudentManager;
 import org.bjtuse.egms.service.WorkbookService;
 import org.bjtuse.egms.util.ExceptionLog;
+import org.bjtuse.egms.util.ImportResult;
 import org.bjtuse.egms.util.ProjectProperties;
 import org.bjtuse.egms.util.RequestParamsUtil;
 import org.bjtuse.egms.web.admin.form.StudentInfoQueryForm;
@@ -39,6 +40,9 @@ public class StudentManagementController {
 	private StudentManager studentManager;
 
 	@Autowired
+	private RoleTypeManager roleTypeManager;
+	
+	@Autowired
 	private WorkbookService workbookService;
 
 	@RequestMapping(value = "/list", method = RequestMethod.GET)
@@ -46,13 +50,12 @@ public class StudentManagementController {
 			@ModelAttribute("queryForm") StudentInfoQueryForm queryForm,
 			@RequestParam(required = false, value = "page") Integer page,
 			Model model, HttpServletRequest request) {
-		int pageSize = 10;
+		int pageSize = 15;
 		if (queryForm.getPageSize() != null) {
 			pageSize = queryForm.getPageSize();
 		}
-		Page<Student> studentList;
 
-		studentList = studentManager.getPaged(queryForm,
+		Page<Student> studentList = studentManager.getPaged(queryForm,
 				RequestParamsUtil.getPageRequest(page, pageSize));
 
 		model.addAttribute("pageObjects", studentList);
@@ -61,66 +64,38 @@ public class StudentManagementController {
 
 		return "/admin/studentManage/list";
 	}
+	
+	@RequestMapping(value = "create")
+	public String create(Model model) {
+		
+		model.addAttribute("student", new Student());
+		model.addAttribute("action", "create");
 
-	@RequestMapping(value = "/save", method = RequestMethod.GET)
-	public String save(HttpServletRequest request) {
-		String id = request.getParameter("id").trim();
-		String loginName = request.getParameter("loginName").trim();
-		String name = request.getParameter("name");
-		String gender = request.getParameter("gender").trim();
-		String college = request.getParameter("college2").trim();
-		String major = request.getParameter("major2").trim();
-		String classNum = request.getParameter("classNum").trim();
-		String identityNum = request.getParameter("identityNum").trim();
-		String phoneNum = request.getParameter("phoneNum").trim();
+		return "/admin/studentManage/editBaseInfo";
+	}
+	
+	@RequestMapping(value = "edit")
+	public String edit(@RequestParam(value = "id", required = false)Long id, Model model) {
+		if(id != null){
+			model.addAttribute("student", studentManager.findStudentById(id));
+			model.addAttribute("action", "edit");
+		}
+		
+		return "/admin/studentManage/editBaseInfo";
+	}
 
-		Student student = null;
-		if (StringUtils.isNotBlank(id)) {
-			student = studentManager.findStudentById(Long.parseLong(id));
-		} else {
-			student = new Student();
+	@RequestMapping(value = "save")
+	public void save(@ModelAttribute("student") Student student){
+		if(student.getId() == null){
 			String defaultPassword = ProjectProperties
 					.getProperty("defaultPassword");
-			String hashedPassword = new Md5Hash(defaultPassword).toHex();
-			student.setPassword(hashedPassword);
+			
+			student.setPassword(new Md5Hash(defaultPassword).toHex());
 			student.setStatus(1);
+			student.setRole(roleTypeManager.getRoleTypeByCode("student"));
 		}
-
-		if (StringUtils.isNotBlank(loginName)) {
-			student.setLoginName(loginName);
-		}
-
-		if (StringUtils.isNotBlank(name)) {
-			student.setName(name);
-		}
-
-		if (StringUtils.isNotBlank(gender)) {
-			student.setGender(Integer.parseInt(gender));
-		}
-
-		if (StringUtils.isNotBlank(college)) {
-			student.setCollege(college);
-		}
-
-		if (StringUtils.isNotBlank(major)) {
-			student.setMajor(major);
-		}
-
-		if (StringUtils.isNotBlank(classNum)) {
-			student.setClassNum(classNum);
-		}
-
-		if (StringUtils.isNotBlank(identityNum)) {
-			student.setIdentityNum(identityNum);
-		}
-
-		if (StringUtils.isNotBlank(phoneNum)) {
-			student.setPhoneNum(phoneNum);
-		}
-
+		
 		studentManager.save(student);
-
-		return "redirect:/admin/studentManage/list";
 	}
 
 	@RequestMapping(value = "/resetPassword", method = RequestMethod.GET)
@@ -142,6 +117,26 @@ public class StudentManagementController {
 		} else {
 			response.getWriter().print(false);
 		}
+	}
+	
+	@RequestMapping(value = "/batchImport")
+	public String batchImport(){
+		return "/admin/studentManage/importExcel";
+	}
+	
+	@RequestMapping(value = "/doImport", method = RequestMethod.POST)
+	public String importStudentAccountInfo(@RequestParam(value = "file") MultipartFile file, Model model, HttpServletRequest request){
+		log.info("[{}] execute batchImportStudentAccountInfo operation.",	request.getAttribute("loginName"));
+		
+		try{
+			ImportResult importResult = workbookService.importStudentAccountInfoFromExcel(file);
+			
+			model.addAttribute("result", importResult);
+		}catch(Exception e){
+			ExceptionLog.log(e);
+		}
+		
+		return "/admin/studentManage/importExcel";
 	}
 
 	@RequestMapping(value = "/importExcel", method = RequestMethod.POST)

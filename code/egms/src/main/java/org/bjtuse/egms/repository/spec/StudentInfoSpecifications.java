@@ -41,7 +41,7 @@ public class StudentInfoSpecifications {
 				}
 				
 				if(StringUtils.isNotBlank(queryForm.getMajor())){
-					PredicateUtil.add(temp, PredicateUtil.like(cb, majorExp, queryForm.getMajor()), cb);
+					temp = PredicateUtil.add(temp, PredicateUtil.like(cb, majorExp, queryForm.getMajor()), cb);
 				}
 				
 				temp = PredicateUtil.add(temp, cb.equal(statusExp, 1), cb);

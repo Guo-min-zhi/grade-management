@@ -63,8 +63,8 @@ public class CommonController {
 		return "error/403";
 	}
 	
-	@RequestMapping(value = "/", method = RequestMethod.GET)
-	public String home(){
-		return "redirect:/login";
-	}
+//	@RequestMapping(value = "/", method = RequestMethod.GET)
+//	public String home(){
+//		return "redirect:/login";
+//	}
 }

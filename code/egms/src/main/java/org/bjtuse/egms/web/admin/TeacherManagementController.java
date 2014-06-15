@@ -8,10 +8,10 @@ import javax.servlet.http.HttpServletResponse;
 
 import lombok.extern.slf4j.Slf4j;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.shiro.crypto.hash.Md5Hash;
 import org.bjtuse.egms.repository.entity.Teacher;
+import org.bjtuse.egms.service.RoleTypeManager;
 import org.bjtuse.egms.service.TeacherManager;
 import org.bjtuse.egms.service.WorkbookService;
 import org.bjtuse.egms.util.ExceptionLog;
@@ -39,6 +39,9 @@ public class TeacherManagementController {
 	private TeacherManager teacherManager;
 
 	@Autowired
+	private RoleTypeManager roleTypeManager;
+	
+	@Autowired
 	private WorkbookService workbookService;
 
 	@RequestMapping(value = "/list", method = RequestMethod.GET)
@@ -46,14 +49,12 @@ public class TeacherManagementController {
 			@ModelAttribute("queryForm") TeacherInfoQueryForm queryForm,
 			@RequestParam(required = false, value = "page") Integer page,
 			Model model, HttpServletRequest request) {
-		int pageSize = 10;
+		int pageSize = 15;
 		if (queryForm.getPageSize() != null) {
 			pageSize = queryForm.getPageSize();
 		}
 
-		Page<Teacher> teacherList;
-
-		teacherList = teacherManager.getPaged(queryForm,
+		 Page<Teacher> teacherList = teacherManager.getPaged(queryForm,
 				RequestParamsUtil.getPageRequest(page, pageSize));
 
 		model.addAttribute("pageObjects", teacherList);
@@ -62,39 +63,40 @@ public class TeacherManagementController {
 
 		return "/admin/teacherManage/list";
 	}
+	
+	@RequestMapping(value = "create")
+	public String create(Model model) {
+		
+		model.addAttribute("teacher", new Teacher());
+		model.addAttribute("action", "create");
 
-	@RequestMapping(value = "/save", method = RequestMethod.GET)
-	public String save(HttpServletRequest request) {
-		String id = request.getParameter("id").trim();
-		String loginName = request.getParameter("loginName2").trim();
-		String name = request.getParameter("name2").trim();
-
-		Teacher teacher = null;
-
-		if (StringUtils.isNotBlank(id)) {
-			teacher = teacherManager.findTeacherById(Long.parseLong(id));
-		} else {
-			teacher = new Teacher();
-			String defaultPassword = ProjectProperties
-					.getProperty("defaultPassword");
-			teacher.setPassword(new Md5Hash(defaultPassword).toHex());
-			teacher.setStatus(1);
+		return "/admin/teacherManage/editBaseInfo";
+	}
+	
+	@RequestMapping(value = "edit")
+	public String edit(@RequestParam(value = "id", required = false)Long id, Model model) {
+		if(id != null){
+			model.addAttribute("teacher", teacherManager.findTeacherById(id));
+			model.addAttribute("action", "edit");
 		}
-
-		if (StringUtils.isNotBlank(loginName)) {
-			teacher.setLoginName(loginName);
-		}
-
-		if (StringUtils.isNotBlank(name)) {
-			teacher.setName(name);
-		}
-
-		teacherManager.saveTeacher(teacher);
-
-		return "redirect:/admin/teacherManage/list";
-
+		
+		return "/admin/teacherManage/editBaseInfo";
 	}
 
+	@RequestMapping(value = "save")
+	public void save(@ModelAttribute("teacher") Teacher teacher){
+		if(teacher.getId() == null){
+			String defaultPassword = ProjectProperties
+					.getProperty("defaultPassword");
+			
+			teacher.setPassword(new Md5Hash(defaultPassword).toHex());
+			teacher.setStatus(1);
+			teacher.setRole(roleTypeManager.getRoleTypeByCode("teacher"));
+		}
+		
+		teacherManager.saveTeacher(teacher);
+	}
+	
 	@RequestMapping(value = "/resetPassword", method = RequestMethod.GET)
 	public void resetPassword(@RequestParam(value = "id") Long id,
 			HttpServletResponse response, HttpServletRequest request)
@@ -118,7 +120,7 @@ public class TeacherManagementController {
 
 	@RequestMapping(value = "/importExcel", method = RequestMethod.POST)
 	@ResponseBody
-	public String importStudentInfoFromExcel(
+	public String importTeacherInfoFromExcel(
 			@RequestParam(value = "file") MultipartFile file,
 			HttpServletRequest request) {
 		try {

@@ -3,6 +3,7 @@ package org.bjtuse.egms.service;
 import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
@@ -29,6 +30,7 @@ import org.bjtuse.egms.repository.entity.RoleType;
 import org.bjtuse.egms.repository.entity.Student;
 import org.bjtuse.egms.repository.entity.Teacher;
 import org.bjtuse.egms.util.CertificateStatus;
+import org.bjtuse.egms.util.ImportResult;
 import org.bjtuse.egms.util.ProjectProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -53,6 +55,133 @@ public class WorkbookService {
 	
 	@Autowired
 	private RoleTypeManager roleTypeManager;
+	
+	public ImportResult importStudentAccountInfoFromExcel(MultipartFile file)throws Exception{
+		Workbook workbook = null;
+		if(file.getOriginalFilename().endsWith("xlsx")){
+			workbook = new XSSFWorkbook(file.getInputStream());
+		}else{
+			workbook = new HSSFWorkbook(file.getInputStream());
+		}
+		
+		Sheet sheet = workbook.getSheetAt(0);
+		
+		return readStudentAccountInfoFromSheet(sheet);
+	}
+	
+	public ImportResult readStudentAccountInfoFromSheet(Sheet sheet){
+		ImportResult importResult = new ImportResult();
+		int successCount  = 0;
+		List<String> msgs = new ArrayList<String>();
+		
+		RoleType roleType = roleTypeManager.getRoleTypeByCode("student");
+		
+		int rowSize = sheet.getLastRowNum();
+		//第一行是标题，从第二行开始
+		for(int i = 1; i < rowSize; i++){
+			Row row = sheet.getRow(i);
+			
+			String studentNum = null;
+			String name = null;
+			String gender = null;
+			String identityNum = null;
+			String phoneNum = null;
+			String college = null;
+			String major = null;
+			String grade = null;
+			String classNum = null;
+			
+			Cell cell0 = row.getCell(0);
+			if(cell0 != null){
+				cell0.setCellType(Cell.CELL_TYPE_STRING);
+				studentNum = cell0.getStringCellValue();
+			}
+			
+			Cell cell1 = row.getCell(1);
+			if(cell1 != null){
+				name = cell1.getStringCellValue();
+			}
+			
+			Cell cell2 = row.getCell(2);
+			if(cell2 != null){
+				gender = cell2.getStringCellValue();
+			}
+			
+			Cell cell3 = row.getCell(3);
+			if(cell3 != null){
+				cell3.setCellType(Cell.CELL_TYPE_STRING);
+				identityNum = cell3.getStringCellValue();
+			}
+			
+			Cell cell4 = row.getCell(4);
+			if(cell4 != null){
+				cell4.setCellType(Cell.CELL_TYPE_STRING);
+				phoneNum = cell4.getStringCellValue();
+			}
+			
+			Cell cell5 = row.getCell(5);
+			if(cell5 != null){
+				college = cell5.getStringCellValue();
+			}
+			
+			Cell cell6 = row.getCell(6);
+			if(cell6 != null){
+				major = cell6.getStringCellValue();
+			}
+			
+			Cell cell7 = row.getCell(7);
+			if(cell7 != null){
+				grade = cell7.getStringCellValue();
+			}
+			
+			Cell cell8 = row.getCell(8);
+			if(cell8 != null){
+				classNum = cell8.getStringCellValue();
+			}
+			
+			Student student = null;
+			if(StringUtils.isNotBlank(studentNum)){
+				student = studentManager.findUserByLoginName(studentNum);
+				
+				if(student == null){
+					student = new Student();
+					student.setLoginName(studentNum.trim());
+					student.setPassword(new Md5Hash(ProjectProperties.getProperty("defaultPassword")).toHex());
+				}
+				
+				student.setStatus(1);
+				student.setName(name.trim());
+				if("男".equals(gender.trim())){
+					student.setGender(1);
+				}else{
+					student.setGender(0);
+				}
+				student.setIdentityNum(identityNum.trim());
+				student.setPhoneNum(phoneNum.trim());
+				student.setCollege(college.trim());
+				student.setMajor(major.trim());
+				student.setGrade(grade.trim());
+				student.setClassNum(classNum.trim());
+				student.setRole(roleType);
+				
+				if(student.getId() == null){
+					msgs.add("导入学生信息成功，学号:" + studentNum);
+					log.info("Import Stucent Account Info Successfully, studentNum:{}", studentNum);
+				}else{
+					msgs.add("更新学生信息成功，学号:" + studentNum);
+					log.info("Update Student Account Info Successfully, studentNum:{}", studentNum);
+				}
+				
+				studentManager.save(student);
+				successCount++;
+			}
+		}
+		
+		importResult.setSuccessCount(successCount);
+		importResult.setMessages(msgs);
+		
+		return importResult;
+	}
 	
 	public void importStudentInfoFromExcel(MultipartFile file)throws Exception{
 		Workbook workbook = null;
@@ -450,8 +579,6 @@ public class WorkbookService {
 			}
 		}
 		
-		
 		return hssfWorkbook;
 	}
-	
 }
