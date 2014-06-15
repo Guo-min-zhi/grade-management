@@ -15,6 +15,7 @@ import org.bjtuse.egms.service.RoleTypeManager;
 import org.bjtuse.egms.service.TeacherManager;
 import org.bjtuse.egms.service.WorkbookService;
 import org.bjtuse.egms.util.ExceptionLog;
+import org.bjtuse.egms.util.ImportResult;
 import org.bjtuse.egms.util.ProjectProperties;
 import org.bjtuse.egms.util.RequestParamsUtil;
 import org.bjtuse.egms.web.admin.form.TeacherInfoQueryForm;
@@ -27,7 +28,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 @Slf4j
@@ -118,21 +118,29 @@ public class TeacherManagementController {
 		}
 	}
 
-	@RequestMapping(value = "/importExcel", method = RequestMethod.POST)
-	@ResponseBody
+	@RequestMapping(value = "/batchImport")
+	public String batchImport(){
+		return "/admin/teacherManage/importExcel";
+	}
+	
+	@RequestMapping(value = "/doImport", method = RequestMethod.POST)
 	public String importTeacherInfoFromExcel(
 			@RequestParam(value = "file") MultipartFile file,
+			Model model,
 			HttpServletRequest request) {
+		log.info("[{}] execute batchImportTeacherAccountInfo operation.",	request.getAttribute("loginName"));
+		
 		try {
 			if(!file.isEmpty()){
-				workbookService.importTeacherInfoFromExcel(file);
+				ImportResult importResult = workbookService.importTeacherInfoFromExcel(file);
+				
+				model.addAttribute("result", importResult);
 			}
 		} catch (Exception e) {
 			ExceptionLog.log(e);
-			return "false";
 		}
 
-		return "true";
+		return "/admin/teacherManage/importExcel";
 	}
 
 	@RequestMapping(value = "/exportExcel", method = RequestMethod.POST)

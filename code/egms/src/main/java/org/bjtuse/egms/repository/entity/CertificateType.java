@@ -27,5 +27,9 @@ public class CertificateType extends IdEntity<Integer> {
 	
 	@Column(name = "formula", length = 300)
 	private String formula;
+	
+	//上传类型，0——教师上传，1——学生上传
+	@Column(name = "upload_type")
+	private Integer uploadType;
 
 }

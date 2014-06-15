@@ -129,9 +129,11 @@ public class StudentManagementController {
 		log.info("[{}] execute batchImportStudentAccountInfo operation.",	request.getAttribute("loginName"));
 		
 		try{
-			ImportResult importResult = workbookService.importStudentAccountInfoFromExcel(file);
-			
-			model.addAttribute("result", importResult);
+			if(!file.isEmpty()){
+				ImportResult importResult = workbookService.importStudentAccountInfoFromExcel(file);
+				
+				model.addAttribute("result", importResult);
+			}
 		}catch(Exception e){
 			ExceptionLog.log(e);
 		}

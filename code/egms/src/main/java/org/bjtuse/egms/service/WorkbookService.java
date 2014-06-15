@@ -415,7 +415,7 @@ public class WorkbookService {
 		return hssfWorkbook;
 	}
 	
-	public void importTeacherInfoFromExcel(MultipartFile file)throws Exception{
+	public ImportResult importTeacherInfoFromExcel(MultipartFile file)throws Exception{
 		Workbook workbook = null;
 		
 		log.info("importTeacherInfoFromExcel--------fileName:{}", file.getOriginalFilename());
@@ -427,10 +427,14 @@ public class WorkbookService {
 		
 		Sheet sheet = workbook.getSheetAt(0);
 		
-		readTeacherInfoFromSheet(sheet);
+		return readTeacherInfoFromSheet(sheet);
 	}
 	
-	private void readTeacherInfoFromSheet(Sheet sheet){
+	private ImportResult readTeacherInfoFromSheet(Sheet sheet){
+		ImportResult importResult = new ImportResult();
+		int successCount = 0;
+		List<String> msgs = new ArrayList<String>();
+		
 		int rowSize = sheet.getLastRowNum();
 		
 		log.info("readTeacherInfoFromSheet--------rowSize:{}", rowSize);
@@ -440,14 +444,15 @@ public class WorkbookService {
 			String loginName = null;
 			String name = null;
 			
-			Cell cell1 = row.getCell(1);
-			if(cell1 != null){
-				loginName = cell1.getStringCellValue();
+			Cell cell0 = row.getCell(0);
+			if(cell0 != null){
+				cell0.setCellType(Cell.CELL_TYPE_STRING);
+				loginName = cell0.getStringCellValue();
 			}
 			
-			Cell cell2 = row.getCell(2);
-			if(cell2 != null){
-				name = cell2.getStringCellValue();
+			Cell cell1 = row.getCell(1);
+			if(cell1 != null){
+				name = cell1.getStringCellValue();
 			}
 			
 			Teacher teacher= null;
@@ -464,10 +469,24 @@ public class WorkbookService {
 				teacher.setName(name);
 				teacher.setRole(roleTypeManager.getRoleTypeByCode("teacher"));
 				
+				if(teacher.getId() == null){
+					msgs.add("导入教师信息成功，工号:" + loginName);
+					log.info("Import Teacher Account Info Successfully, teacherNum:{}", loginName);
+				}else{
+					msgs.add("更新教师信息成功，工号:" + loginName);
+					log.info("Update Teacher Account Info Successfully, teacherNum:{}", loginName);
+				}
+				
+				successCount++;
 				teacherManager.saveTeacher(teacher);
 			}
 			
 		}
+		
+		importResult.setSuccessCount(successCount);
+		importResult.setMessages(msgs);
+		
+		return importResult;
 	}
 	
 	public HSSFWorkbook generateTeacherInfoWorkbook(List<Teacher> teacherList){
