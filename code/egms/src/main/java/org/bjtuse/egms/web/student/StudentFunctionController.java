@@ -40,6 +40,22 @@ public class StudentFunctionController {
 	private CertificateTypeManager certificateTypeManager;
 	
 	
+	/**
+	 * 	修改学生个人信息	
+	 * 
+	 * @param studentId
+	 * @param studentName
+	 * @param gender
+	 * @param studentCollege
+	 * @param studentMajor
+	 * @param studentGrade
+	 * @param studentClass
+	 * @param studentIdentity
+	 * @param studentPhone
+	 * @param model
+	 * @param request
+	 * @return
+	 */
 	@RequestMapping(value = "/student/modifyInfo", method = RequestMethod.POST)
 	@ResponseBody
 	public String modifyInfo(String studentId, String studentName,
@@ -71,8 +87,9 @@ public class StudentFunctionController {
 	@ResponseBody
 	public String uploadPersonPhoto(@RequestParam MultipartFile file, String studentId, 
 			ModelMap model, HttpServletRequest request) {
-		String loginName = request.getSession().getAttribute("loginName").toString();
-		Student student = studentManager.findUserByLoginName(loginName);
+		/*String loginName = request.getSession().getAttribute("loginName").toString();
+		Student student = studentManager.findUserByLoginName(loginName);*/
+		Student student = studentManager.findUserByLoginName("test");
 
 		String projectName = request.getContextPath();
 		String ctxPath = request.getSession().getServletContext()

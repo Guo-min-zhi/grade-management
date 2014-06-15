@@ -10,4 +10,3 @@
 	<p><a href="<c:url value="/login"/>">返回首页</a></p>
 </body>
 </html>
-
