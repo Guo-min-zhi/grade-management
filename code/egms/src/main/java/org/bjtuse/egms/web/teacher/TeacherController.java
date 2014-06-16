@@ -60,11 +60,26 @@ public class TeacherController {
 	@Autowired
 	private WorkbookService workbookService;
 
+	/**
+	 *  路由到修改密码页面
+	 * 
+	 * @return
+	 */
 	@RequestMapping(value = "/password", method = RequestMethod.GET)
 	public String toPassword() {
-		return "teacher/teacherChangePassword";
+		return "teacher/password";
 	}
 
+	/**
+	 * 路由到成绩管理页面
+	 * 
+	 * @param queryFastForm
+	 * @param queryComplexForm
+	 * @param page
+	 * @param model
+	 * @param request
+	 * @return
+	 */
 	@RequestMapping(value = "/management", method = RequestMethod.GET)
 	public String toManagement(
 			@ModelAttribute("queryFastForm") CertificateFastQueryForm queryFastForm,
@@ -95,9 +110,19 @@ public class TeacherController {
 		model.addAttribute("pageObjects", certificateScoreList);
 		model.addAttribute("queryForm", queryFastForm);
 		model.addAttribute("pageUrl", RequestParamsUtil.getCurrentURL(request));
-		return "teacher/teacherManagement";
+		return "teacher/management";
 	}
 
+	/**
+	 *  修改密码的具体实现
+	 * 
+	 * @param oldPassword
+	 * @param newPassword
+	 * @param againPassword
+	 * @param model
+	 * @param request
+	 * @return
+	 */
 	@RequestMapping(value = "/password", method = RequestMethod.POST)
 	public String modifyTeacherPassword(String oldPassword, String newPassword,
 			String againPassword, ModelMap model, HttpServletRequest request) {
@@ -116,14 +141,23 @@ public class TeacherController {
 		return "teacher/teacherChangePassword";
 	}
 
+	/**
+	 * 跳转到证书详情页面
+	 * 
+	 * @param certificateId
+	 * @param model
+	 * @param request
+	 * @return
+	 */
 	@RequestMapping(value = "/certificate/{certificateId}", method = RequestMethod.GET)
 	public String certificateInfo(@PathVariable Long certificateId,
 			ModelMap model, HttpServletRequest request) {
 
-		String loginName = request.getSession().getAttribute("loginName")
-				.toString();
-		Teacher verifyTeacher = teacherManager
-				.findTeacherByLoginName(loginName);
+		/*String loginName = request.getSession().getAttribute("loginName").toString();
+		Teacher verifyTeacher = teacherManager.findTeacherByLoginName(loginName);*/
+		
+		// TODO
+		Teacher verifyTeacher = teacherManager.findTeacherByLoginName("teacher");
 
 		CertificateScore certificateScore = certificateScoreManager
 				.findCertificateScoreById(certificateId);
