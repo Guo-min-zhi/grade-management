@@ -5,7 +5,7 @@
 	<div class="sidebar-collapse">
 		<ul class="nav" id="side-menu">
 			<li>
-				<a href="${ctx }/student/check">
+				<a href="${ctx }/teacher/importGrade">
 					<i class="fa fa-bar-chart-o fa-fw"></i> 成绩导入
 				</a>
 			</li>
