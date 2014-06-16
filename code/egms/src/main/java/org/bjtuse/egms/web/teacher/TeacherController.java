@@ -450,4 +450,12 @@ public class TeacherController {
 		model.addAttribute("pageUrl", RequestParamsUtil.getCurrentURL(request));
 		return "teacher/teacherManagement";
 	}
+	
+	@RequestMapping(value = "importGrade", method = RequestMethod.GET)
+	public String importGrade(Model model){
+		List<CertificateType> cts = certificateTypeManager.getCertificateTypesImportByTeacher();
+		
+		model.addAttribute("cts", cts);
+		return "teacher/importGrade";
+	}
 }

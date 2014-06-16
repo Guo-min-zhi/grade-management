@@ -27,6 +27,14 @@ public class CertificateTypeManager {
 		return certificateTypeDao.findCertificateTypeByCertificateName(name);
 	}
 	
+	public List<CertificateType> getCertificateTypesImportByTeacher(){
+		return certificateTypeDao.findCertificateTypesImportByTeacher();
+	}
+	
+	public List<CertificateType> getCertificateTypesImportByStudent(){
+		return certificateTypeDao.findCertificateTypesImportByStudent();
+	}
+	
 	@Transactional(readOnly = false)
 	public void save(CertificateType certificateType){
 		certificateTypeDao.save(certificateType);
