@@ -35,7 +35,7 @@
                     <div class="panel panel-info">
                         <div class="panel-heading">成绩导入</div>
                         <div class="panel-body">
-                            <form role="form" action="${ctx }/teacher/importGradeFile" class="form-horizontal" enctype="multipart/form-data" method="post">
+                            <form role="form" action="${ctx }/teacher/uploadGradeExcel" class="form-horizontal" enctype="multipart/form-data" method="post">
                                 <div class="form-group">
                                      <label for="type" class="col-sm-2 control-label">导入类型：</label>
                                      <div class="col-sm-3">
