@@ -11,7 +11,7 @@
 			</li>
 			<li>
 				<a href="${ctx }/teacher/management">
-					<i class="fa fa-bar-chart-o fa-fw"></i> 成绩管理
+					<i class="fa fa-bar-chart-o fa-fw"></i> 证书成绩管理
 				</a>
 			</li>
 			<li>
@@ -25,7 +25,7 @@
 					<span class="fa arrow"></span>
 				</a>
 				<ul class="nav nav-second-level">
-					<li><a href="${ctx }/student/info">完善个人信息</a></li>
+					<%-- <li><a href="${ctx }/student/info">完善个人信息</a></li> --%>
 					<li><a href="${ctx }/teacher/password">修改密码</a></li>
 				</ul> <!-- /.nav-second-level -->
 			</li>
