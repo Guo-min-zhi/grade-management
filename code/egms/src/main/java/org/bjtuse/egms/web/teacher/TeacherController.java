@@ -1,5 +1,7 @@
 package org.bjtuse.egms.web.teacher;
 
+import java.io.File;
+import java.io.IOException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -7,6 +9,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -26,6 +29,7 @@ import org.bjtuse.egms.service.TeacherManager;
 import org.bjtuse.egms.service.WorkbookService;
 import org.bjtuse.egms.util.CertificateStatus;
 import org.bjtuse.egms.util.ExceptionLog;
+import org.bjtuse.egms.util.ImportGrade;
 import org.bjtuse.egms.util.RequestParamsUtil;
 import org.bjtuse.egms.web.admin.ViewExcel;
 import org.bjtuse.egms.web.teacher.form.CertificateComplexQueryForm;
@@ -36,12 +40,14 @@ import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
+import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Slf4j
@@ -464,6 +470,113 @@ public class TeacherController {
 		
 		model.addAttribute("cts", cts);
 		return "teacher/importGrade";
+	}
+	
+	@RequestMapping(value = "/uploadGradeExcel", method = RequestMethod.POST)
+	public String uploadGradeExcel(@RequestParam(value = "file") MultipartFile file, Model model, HttpServletRequest request){
+		try{
+			if(!file.isEmpty()){
+				String ct = request.getParameter("ct");
+//				String loginName = request.getSession().getAttribute("loginName").toString();
+				String loginName = "admin";
+				String ctxPath = request.getSession().getServletContext().getRealPath("/")
+						+ File.separatorChar + "temp" + File.separator + loginName;
+				//先将导入成绩的Excel存起来，待会真正导入之后再删除
+				File fileDir = new File(ctxPath);
+				if (!fileDir.exists()){
+					fileDir.mkdirs();
+				}else{
+					fileDir.delete();
+					fileDir.mkdirs();
+				}
+				
+				String fileExt = file.getOriginalFilename()
+						.substring(file.getOriginalFilename().lastIndexOf(".") + 1)
+						.toLowerCase();
+				
+				String newFileName = UUID.randomUUID().toString() + "." + fileExt;
+				
+				File uploadFile = new File(ctxPath + File.separatorChar + newFileName);
+				try {
+					FileCopyUtils.copy(file.getBytes(), uploadFile);
+				} catch (IOException e) {
+					ExceptionLog.log(e);
+				}
+				//保存临时文件结束
+				List<String> fieldNames = workbookService.getFiledNamesFromExcel(file);
+				
+				model.addAttribute("tempFile", newFileName);
+				model.addAttribute("fields", fieldNames);
+				model.addAttribute("ct", ct);
+			}
+		}catch(Exception e){
+			ExceptionLog.log(e);
+		}
+		
+		return "teacher/matchField";
+	}
+	
+	@RequestMapping(value = "doImportGrade", method = RequestMethod.POST)
+	public String doImportGrade(Model model, HttpServletRequest request){
+		try{
+//			String loginName = request.getSession().getAttribute("loginName").toString();
+			String loginName = "admin";
+			String tempFile = request.getParameter("tempFile");
+			String ct = request.getParameter("ct");
+			
+			String ctxPath = request.getSession().getServletContext().getRealPath("/")
+					+ File.separatorChar + "temp" + File.separator + loginName;
+			
+			ImportGrade importGrade = new ImportGrade();
+			String studentNum = request.getParameter("studentNum").trim();
+			if(StringUtils.isBlank(studentNum)){
+				model.addAttribute("errorMsg", "学号必须有对应的Excel字段！");
+				
+				return "teacher/importGradeResult";
+			}else{
+				importGrade.setStudentName(Integer.parseInt(studentNum));
+			}
+			
+			String studentName = request.getParameter("studentName").trim();
+			if(StringUtils.isNotBlank(studentName)){
+				importGrade.setStudentName(Integer.parseInt(studentName));
+			}
+			
+			String sourceScore =  request.getParameter("sourceScore").trim();
+			if(StringUtils.isNotBlank(sourceScore)){
+				importGrade.setSourceScore(Integer.parseInt(sourceScore));
+			}
+			
+			String gradeA = request.getParameter("gradeA").trim();
+			if(StringUtils.isNotBlank(gradeA)){
+				importGrade.setGradeA(Integer.parseInt(gradeA));
+			}
+			
+			String gradeB = request.getParameter("gradeB").trim();
+			if(StringUtils.isNotBlank(gradeB)){
+				importGrade.setGradeB(Integer.parseInt(gradeB));
+			}
+			
+			String gradeC = request.getParameter("gradeC").trim();
+			if(StringUtils.isNotBlank(gradeC)){
+				importGrade.setGradeC(Integer.parseInt(gradeC));
+			}
+			
+			if(!importGrade.checkGrade()){
+				model.addAttribute("errorMsg", "没有选择相应的成绩字段！");
+				
+				return "teacher/importGradeResult";
+			}
+			
+			File tempExcel = new File(ctxPath + File.separatorChar + tempFile);
+			
+			
+		}catch (NumberFormatException e) {
+			ExceptionLog.log(e);
+			model.addAttribute("errorMsg", "Excel表字段序号填写错误！");
+		}
+		
+		return "teacher/importGradeResult";
 	}
 	
 	/**

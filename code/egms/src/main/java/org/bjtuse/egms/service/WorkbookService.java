@@ -1,5 +1,8 @@
 package org.bjtuse.egms.service;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
 import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -30,6 +33,7 @@ import org.bjtuse.egms.repository.entity.RoleType;
 import org.bjtuse.egms.repository.entity.Student;
 import org.bjtuse.egms.repository.entity.Teacher;
 import org.bjtuse.egms.util.CertificateStatus;
+import org.bjtuse.egms.util.ImportGrade;
 import org.bjtuse.egms.util.ImportResult;
 import org.bjtuse.egms.util.ProjectProperties;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -599,5 +603,103 @@ public class WorkbookService {
 		}
 		
 		return hssfWorkbook;
+	}
+	
+	public List<String> getFiledNamesFromExcel(MultipartFile file) throws Exception{
+		List<String> fieldNames = new ArrayList<String>();
+		
+		Workbook workbook = null;
+		if(file.getOriginalFilename().endsWith("xlsx")){
+			workbook = new XSSFWorkbook(file.getInputStream());
+		}else{
+			workbook = new HSSFWorkbook(file.getInputStream());
+		}
+		
+		Sheet sheet = workbook.getSheetAt(0);
+		
+		Row firstRow = sheet.getRow(sheet.getFirstRowNum());
+		int max = firstRow.getLastCellNum();
+		for(int i = 0; i < max; i++){
+			Cell cell = firstRow.getCell(i);
+			if(cell != null){
+				cell.setCellType(Cell.CELL_TYPE_STRING);
+				fieldNames.add(cell.getStringCellValue());
+			}else{
+				fieldNames.add("");
+			}
+		}
+		
+		return fieldNames;
+	}
+	
+	public ImportResult importGradeFromExcel(File file, ImportGrade importGrade, CertificateType certificateType) throws Exception{
+		ImportResult importResult = new ImportResult();
+		
+		Workbook workbook = null;
+		InputStream is = new FileInputStream(file);
+		
+		if(file.getName().endsWith("xlsx")){
+			workbook = new XSSFWorkbook(is);
+		}else{
+			workbook = new HSSFWorkbook(is);
+		}
+		
+		Sheet sheet = workbook.getSheetAt(0);
+		
+		int max = sheet.getLastRowNum();
+		for(int i = 1; i < max; i++){
+			Row row = sheet.getRow(i);
+			
+			String studentNum = null;
+			String name = null;
+			Double sourceScore = null;
+			Double gradeA = null;
+			Double gradeB = null;
+			Double gradeC = null;
+			
+			if(row.getCell(importGrade.getStudentNum()) != null){
+				studentNum = row.getCell(importGrade.getStudentNum()).getStringCellValue();
+			}
+			
+			if(StringUtils.isNotBlank(studentNum)){
+				RoleType roleType = roleTypeManager.getRoleTypeByCode("student");
+				Student student	= studentManager.findUserByLoginName(studentNum.trim());
+				if(student == null){
+					student = new Student();
+					student.setLoginName(studentNum.trim());
+					student.setPassword(new Md5Hash(ProjectProperties.getProperty("defaultPassword")).toHex());
+				}
+				
+				student.setStatus(1);
+				student.setRole(roleType);
+				
+				if(importGrade.getStudentName() != null && row.getCell(importGrade.getStudentName()) != null){
+					name = row.getCell(importGrade.getStudentName()).getStringCellValue();
+				}
+				
+				student.setName(name);
+				
+				if(importGrade.getSourceScore() != null){
+					if(row.getCell(importGrade.getSourceScore()) != null){
+						sourceScore = row.getCell(importGrade.getSourceScore()).getNumericCellValue();
+					}
+				}else{
+					if(importGrade.getGradeA() != null && row.getCell(importGrade.getGradeA()) != null){
+						gradeA = row.getCell(importGrade.getGradeA()).getNumericCellValue();
+					}
+					
+					if(importGrade.getGradeB() != null && row.getCell(importGrade.getGradeB()) != null){
+						gradeB = row.getCell(importGrade.getGradeB()).getNumericCellValue();
+					}
+					
+					if(importGrade.getGradeC() != null && row.getCell(importGrade.getGradeC()) != null){
+						gradeC = row.getCell(importGrade.getGradeC()).getNumericCellValue();
+					}
+				}
+				
+			}
+		}
+		
+		return importResult;
 	}
 }
