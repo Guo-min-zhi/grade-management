@@ -486,7 +486,11 @@ public class TeacherController {
 				if (!fileDir.exists()){
 					fileDir.mkdirs();
 				}else{
-					fileDir.delete();
+					//清空临时文件夹
+					File[] files = fileDir.listFiles();
+					for(File f : files){
+						f.delete();
+					}
 					fileDir.mkdirs();
 				}
 				
