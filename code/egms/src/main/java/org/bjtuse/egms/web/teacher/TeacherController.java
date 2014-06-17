@@ -30,6 +30,7 @@ import org.bjtuse.egms.util.RequestParamsUtil;
 import org.bjtuse.egms.web.admin.ViewExcel;
 import org.bjtuse.egms.web.teacher.form.CertificateComplexQueryForm;
 import org.bjtuse.egms.web.teacher.form.CertificateFastQueryForm;
+import org.bjtuse.egms.web.teacher.form.QueryComprehensiveForm;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
@@ -451,6 +452,12 @@ public class TeacherController {
 		return "teacher/teacherManagement";
 	}
 	
+	/**
+	 *  路由到成绩导入页面
+	 * 
+	 * @param model
+	 * @return
+	 */
 	@RequestMapping(value = "importGrade", method = RequestMethod.GET)
 	public String importGrade(Model model){
 		List<CertificateType> cts = certificateTypeManager.getCertificateTypesImportByTeacher();
@@ -458,4 +465,37 @@ public class TeacherController {
 		model.addAttribute("cts", cts);
 		return "teacher/importGrade";
 	}
+	
+	/**
+	 * 路由到综合成绩管理页面
+	 * @param model
+	 * @return
+	 */
+	@RequestMapping(value="manage", method=RequestMethod.GET)
+	public String manageComprehensive(
+			@ModelAttribute("queryComprehensiveForm") QueryComprehensiveForm queryComprehensiveForm,
+			@RequestParam(required = false, value = "page") Integer page,
+			Model model, HttpServletRequest request){
+		// 获得成绩来源里的成绩类型
+		List<CertificateType> cts = certificateTypeManager.getCertificateTypesImportByTeacher();
+		model.addAttribute("cts", cts);
+		
+		int pageSize = 10;
+		if(queryComprehensiveForm.getPageSize() != null){
+			pageSize = queryComprehensiveForm.getPageSize();
+		}
+		Page<CertificateScore> certificateScoreList;
+		certificateScoreList = certificateScoreManager.getComprehensivePaged(queryComprehensiveForm, RequestParamsUtil.getPageRequest(page, pageSize));
+		model.addAttribute("pageObjects", certificateScoreList);
+		model.addAttribute("queryComprehensiveForm", queryComprehensiveForm);
+		model.addAttribute("pageUrl", RequestParamsUtil.getCurrentURL(request));
+		return "teacher/manageComprehensive";
+	}
+	
+	@RequestMapping(value="delete", method=RequestMethod.GET)
+	public String deleteOneCertificate(Integer id){
+		
+		return "teacher/manageComprehensive";
+	}
+	
 }

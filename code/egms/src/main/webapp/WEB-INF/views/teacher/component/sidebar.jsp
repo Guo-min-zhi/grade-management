@@ -15,8 +15,8 @@
 				</a>
 			</li>
 			<li>
-				<a href="${ctx }/student/check">
-					<i class="fa fa-bar-chart-o fa-fw"></i> 成绩导出
+				<a href="${ctx }/teacher/manage">
+					<i class="fa fa-bar-chart-o fa-fw"></i> 综合成绩管理
 				</a>
 			</li>
 			<li id="personalInfo">

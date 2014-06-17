@@ -22,7 +22,7 @@
 		        ajaxCallback: function(data){
 		            $("#wrapper").html(data);
 		        }
-		     })
+		     });
 		}
 	});
 </script>

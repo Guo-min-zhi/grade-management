@@ -7,8 +7,10 @@ import org.bjtuse.egms.repository.entity.CertificateScore;
 import org.bjtuse.egms.repository.entity.Student;
 import org.bjtuse.egms.repository.spec.CertificateScoreComplexSpecification;
 import org.bjtuse.egms.repository.spec.CertificateScoreSpecifications;
+import org.bjtuse.egms.repository.spec.ComprehensiveScoreSpecification;
 import org.bjtuse.egms.web.teacher.form.CertificateComplexQueryForm;
 import org.bjtuse.egms.web.teacher.form.CertificateFastQueryForm;
+import org.bjtuse.egms.web.teacher.form.QueryComprehensiveForm;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -42,6 +44,12 @@ public class CertificateScoreManager {
 		certificateScoreDao.delete(id);
 	}
 	
+	/**
+	 * 快速查询分页
+	 * @param queryFastForm
+	 * @param pageable
+	 * @return
+	 */
 	public Page<CertificateScore> getPaged(CertificateFastQueryForm queryFastForm, Pageable pageable){
 		return certificateScoreDao.findAll(Specifications.where(CertificateScoreSpecifications.certificateScoreSpec(queryFastForm)), pageable);
 	}
@@ -60,11 +68,27 @@ public class CertificateScoreManager {
 		return certificateScoreDao.findCertificateScoreToExport();
 	}
 	
+	/**
+	 * 复杂查询分页
+	 * @param queryComplexForm
+	 * @param pageable
+	 * @return
+	 */
 	public Page<CertificateScore> getComplexPaged(CertificateComplexQueryForm queryComplexForm, Pageable pageable){
 		return certificateScoreDao.findAll(Specifications.where(CertificateScoreComplexSpecification.certificateScoreComplexSpec(queryComplexForm)), pageable);
 	}
 	
 	public CertificateScore findCertificateScoreByStudentCertificateTypeAndStatus(Long studentId, Integer certificateTypeId, Integer status){
 		return certificateScoreDao.findByStudentCertificateTypeAndStatus(studentId, certificateTypeId, status);
+	}
+	
+	/**
+	 * 综合成绩查询分页
+	 * @param queryComprehensiveForm
+	 * @param pageable
+	 * @return
+	 */
+	public Page<CertificateScore> getComprehensivePaged(QueryComprehensiveForm queryComprehensiveForm, Pageable pageable){
+		return certificateScoreDao.findAll(Specifications.where(ComprehensiveScoreSpecification.comprehensiveSpecification(queryComprehensiveForm)), pageable);
 	}
 }

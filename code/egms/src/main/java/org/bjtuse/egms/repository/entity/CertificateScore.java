@@ -90,4 +90,16 @@ public class CertificateScore extends IdEntity<Long> {
 	@Column(name = "comment_b", length = 100)
 	private String commentB;
 	
+	@Column(name = "grade_a")
+	private Float gradeA;
+	
+	@Column(name = "grade_b")
+	private Float gradeB;
+	
+	@Column(name = "grade_c")
+	private Float gradeC;
+	
+	@Column(name = "grade_final", length = 100)
+	private String gradeFinal;
+	
 }
