@@ -162,12 +162,9 @@ public class TeacherController {
 	public String certificateInfo(@PathVariable Long certificateId,
 			ModelMap model, HttpServletRequest request) {
 
-		/*String loginName = request.getSession().getAttribute("loginName").toString();
-		Teacher verifyTeacher = teacherManager.findTeacherByLoginName(loginName);*/
+		String loginName = request.getSession().getAttribute("loginName").toString();
+		Teacher verifyTeacher = teacherManager.findTeacherByLoginName(loginName);
 		
-		// TODO
-		Teacher verifyTeacher = teacherManager.findTeacherByLoginName("teacher");
-
 		CertificateScore certificateScore = certificateScoreManager
 				.findCertificateScoreById(certificateId);
 		if (certificateScore.getVerifyTeacherB() != null
@@ -689,28 +686,8 @@ public class TeacherController {
 	public String comprehensiveScoreInfo(@PathVariable Long certificateId,
 			ModelMap model, HttpServletRequest request) {
 
-		/*String loginName = request.getSession().getAttribute("loginName").toString();
-		Teacher verifyTeacher = teacherManager.findTeacherByLoginName(loginName);*/
-		
-		// TODO
-		Teacher verifyTeacher = teacherManager.findTeacherByLoginName("teacher");
-
 		CertificateScore certificateScore = certificateScoreManager
 				.findCertificateScoreById(certificateId);
-		/*if (certificateScore.getVerifyTeacherB() != null
-				&& !certificateScore.getVerifyTeacherB().getLoginName()
-						.equals(verifyTeacher.getLoginName())) {
-			// 该用户为A老师，并且B老师已经评阅
-			model.addAttribute("permission", "0");
-		} else if (certificateScore.getVerifyTeacherB() != null
-				&& certificateScore.getVerifyTeacherB().getLoginName()
-						.equals(verifyTeacher.getLoginName())
-				&& certificateScore.getStatus() == CertificateStatus.NOPASSCHECKED) {
-			// 该用户为B老师, 但A老师已经将证书改为不通过
-			model.addAttribute("permission", "0");
-		} else {
-			model.addAttribute("permission", "1");
-		}*/
 		Student student = certificateScore.getStudentInfo();
 		Map<Integer, String> status = new HashMap<Integer, String>();
 		status.put(1, "待查验");

@@ -46,10 +46,8 @@ public class StudentRouterController {
 	 */
 	@RequestMapping(value = "/student/info", method = RequestMethod.GET)
 	public String studentInfo(ModelMap model, HttpServletRequest request) {
-		/*String loginName = request.getSession().getAttribute("loginName").toString();
-		Student student = studentManager.findUserByLoginName(loginName);*/
-		// TODO
-		Student student = studentManager.findUserByLoginName("test");
+		String loginName = request.getSession().getAttribute("loginName").toString();
+		Student student = studentManager.findUserByLoginName(loginName);
 		model.addAttribute("student", student);
 		return "student/info";
 	}
@@ -117,10 +115,8 @@ public class StudentRouterController {
 	@RequestMapping(value = "/student/photo", method = RequestMethod.GET)
 	public String uploadPhoto(ModelMap model, HttpServletRequest request) {
 		
-		/*String loginName = request.getSession().getAttribute("loginName").toString();
-		Student student = studentManager.findUserByLoginName(loginName);*/
-		// TODO
-		Student student = studentManager.findUserByLoginName("test");
+		String loginName = request.getSession().getAttribute("loginName").toString();
+		Student student = studentManager.findUserByLoginName(loginName);
 		model.addAttribute("head", student.getPhoto());
 		return "student/uploadPhoto";
 	}
@@ -167,10 +163,8 @@ public class StudentRouterController {
 	@RequestMapping(value = "/student/certificate", method = RequestMethod.GET)
 	public String goCertificate(@RequestParam(required = false, value = "id")Long id, ModelMap model, HttpServletRequest request){
 		
-		/*String studentId = request.getSession().getAttribute("loginName").toString();
-		Student student = studentManager.findUserByLoginName(studentId);*/
-		// TODO
-		Student student = studentManager.findUserByLoginName("test");
+		String studentId = request.getSession().getAttribute("loginName").toString();
+		Student student = studentManager.findUserByLoginName(studentId);
 		if(StringUtils.isNotBlank(student.getPhoneNum()) && StringUtils.isNotBlank(student.getPhoto())){
 			CertificateScore certificateScore;
 			if(id != null){
@@ -212,10 +206,8 @@ public class StudentRouterController {
 	@RequestMapping(value = "/student/check", method = RequestMethod.GET)
 	public String toCheckView(ModelMap model, HttpServletRequest request){
 		
-		/*String studentId = request.getSession().getAttribute("loginName").toString();;
-		Student student = studentManager.findUserByLoginName(studentId);*/
-		// TODO
-		Student student = studentManager.findUserByLoginName("test");
+		String studentId = request.getSession().getAttribute("loginName").toString();;
+		Student student = studentManager.findUserByLoginName(studentId);
 		List<CertificateScore> certificateScores = certificateScoreManager.findCertificatesByStudent(student);
 		model.addAttribute("certificates", certificateScores);
 		Map<Integer, String> status = new HashMap<Integer, String>();
