@@ -5,10 +5,17 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletResponse;
+
+import lombok.extern.slf4j.Slf4j;
+
 import net.java.dev.eval.Expression;
 
+import org.bjtuse.egms.repository.entity.CertificateScore;
 import org.bjtuse.egms.repository.entity.CertificateType;
 import org.bjtuse.egms.service.CertificateTypeManager;
+import org.bjtuse.egms.util.CommonUtil;
+import org.bjtuse.egms.util.ExceptionLog;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -19,6 +26,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 
+@Slf4j
 @Controller
 @RequestMapping("/admin/parameterManage")
 public class ParameterManageController {
@@ -133,6 +141,55 @@ public class ParameterManageController {
 		certificateTypeManager.delete(id);
 		
 		return "redirect:/admin/parameterManage/gradeTypeList";
+	}
+	
+	@RequestMapping(value = "checkFormula", method = RequestMethod.GET)
+	public void checkFormula(@RequestParam("formula")String formula, HttpServletResponse response){
+		try{
+			Expression exp = new Expression(formula);
+			CertificateScore s = new CertificateScore();
+			boolean x1 = false;
+			boolean x2 = false;
+			boolean x3 = false;
+			boolean x4 = false;
+			boolean x5 = false;
+			
+			if(formula.contains("x1")){
+				x1 = true;
+				s.setGradeA(90f);
+			}
+			if(formula.contains("x2")){
+				x2 = true;
+				s.setGradeB(90f);
+			}
+			if(formula.contains("x3")){
+				x3 = true;
+				s.setGradeC(90f);
+			}
+			if(formula.contains("x4")){
+				x4 = true;
+				s.setOralScore(90f);
+			}
+			if(formula.contains("x5")){
+				x5 = true;
+				s.setWrittenScore(90f);
+			}
+			
+			Map<String, BigDecimal> vars;
+			if(x1 || x2 || x3 || x4 || x5){
+				vars = CommonUtil.prepareVariables(x1, x2, x3, x4, x5, s);
+			}else{
+				vars = new HashMap<String, BigDecimal>();
+				
+				int source = 530;
+				vars.put("x", new BigDecimal(source));
+			}
+			
+			log.info("======================测试公式:-----translated score:" + exp.eval(vars).intValue());
+			response.getWriter().write("true");
+		}catch(Exception e){
+			ExceptionLog.log(e);
+		}
 	}
 	
 }

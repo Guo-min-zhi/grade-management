@@ -1,12 +1,14 @@
 package org.bjtuse.egms.util;
 
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.bjtuse.egms.repository.entity.CertificateScore;
-
 import net.java.dev.eval.Expression;
+
+import org.bjtuse.egms.repository.entity.CertificateScore;
 
 public class CommonUtil {
 	
@@ -88,6 +90,14 @@ public class CommonUtil {
 		}
 		
 		return variables;
+	}
+	
+	public static String transferDateToString(Long time){
+		String pattern = "yyyy-MM-dd HH:mm:ss";
+		SimpleDateFormat sdf = new SimpleDateFormat(pattern);
+		
+		Date date = new Date(time);
+		return sdf.format(date);
 	}
 	
 	public static void main(String[] args){

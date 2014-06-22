@@ -148,7 +148,7 @@ public class TeacherController {
 		} else {
 			model.addAttribute("result", "0");
 		}
-		return "teacher/teacherChangePassword";
+		return "teacher/password";
 	}
 
 	/**
@@ -503,8 +503,7 @@ public class TeacherController {
 		try{
 			if(!file.isEmpty()){
 				String ct = request.getParameter("ct");
-//				String loginName = request.getSession().getAttribute("loginName").toString();
-				String loginName = "admin";
+				String loginName = request.getSession().getAttribute("loginName").toString();
 				String ctxPath = request.getSession().getServletContext().getRealPath("/")
 						+ File.separatorChar + "temp" + File.separator + loginName;
 				//先将导入成绩的Excel存起来，待会真正导入之后再删除
@@ -549,8 +548,7 @@ public class TeacherController {
 	@RequestMapping(value = "doImportGrade", method = RequestMethod.POST)
 	public String doImportGrade(Model model, HttpServletRequest request){
 		try{
-//			String loginName = request.getSession().getAttribute("loginName").toString();
-			String loginName = "admin";
+			String loginName = request.getSession().getAttribute("loginName").toString();
 			String tempFile = request.getParameter("tempFile");
 			String ct = request.getParameter("ct");
 			

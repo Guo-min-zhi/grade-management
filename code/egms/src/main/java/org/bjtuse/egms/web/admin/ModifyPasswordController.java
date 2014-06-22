@@ -14,6 +14,7 @@ import org.bjtuse.egms.service.AdminManager;
 import org.bjtuse.egms.util.ProjectProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
@@ -25,9 +26,9 @@ public class ModifyPasswordController {
 	@Autowired
 	private AdminManager adminManager;
 	
-	@RequestMapping(value = "/index", method = RequestMethod.GET)
+	@RequestMapping(value = "/password", method = RequestMethod.GET)
 	public String index(){
-		return "/admin/modifyPassword";
+		return "/admin/password";
 	}
 	
 	@RequestMapping(value = "/resetPassword", method = RequestMethod.GET)
@@ -43,8 +44,8 @@ public class ModifyPasswordController {
 		response.getWriter().write("true");
 	}
 	
-	@RequestMapping(value = "/modify", method = RequestMethod.GET)
-	public void modifyPassword(HttpServletRequest request, HttpServletResponse response) throws IOException{
+	@RequestMapping(value = "/modify", method = RequestMethod.POST)
+	public String modifyPassword(HttpServletRequest request, Model model){
 		String loginName = (String)request.getSession().getAttribute("loginName");
 		String oldPassword = request.getParameter("oldPassword");
 		String newPassword = request.getParameter("newPassword");
@@ -56,10 +57,12 @@ public class ModifyPasswordController {
 			adminManager.save(administrator);
 			
 			log.info("{} modify password.", loginName);
-			response.getWriter().write("true");
+			model.addAttribute("result", "1");
 		}else{
-			response.getWriter().write("false");
+			model.addAttribute("result", "0");
 		}
+		
+		return "/admin/password";
 	}
 	
 }
