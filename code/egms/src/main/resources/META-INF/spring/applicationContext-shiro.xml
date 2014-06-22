@@ -28,9 +28,9 @@
 				/login = authc
 				/logout = logout
 				/static/** = anon
-				/certificate-check/** = anon
-				/certificate-photos/** = anon
-				/student-photos/** = anon
+				/certificate-check/** = authc
+				/certificate-photos/** = authc
+				/student-photos/** = authc
 				/tmp/** = anon
 				/admin/** = authc, roles[admin]
 				/teacher/** = authc, roles[teacher]
