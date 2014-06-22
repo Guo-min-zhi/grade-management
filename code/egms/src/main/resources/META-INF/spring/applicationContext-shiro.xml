@@ -7,14 +7,14 @@
 	<description>Shiro Configuration</description>
 
 	<!-- Shiro's main business-tier object for web-enabled applications -->
-	<!-- <bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
+	<bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
 		<property name="realm" ref="shiroDbRealm" />
 		<property name="cacheManager" ref="shiroEhcacheManager" />
-	</bean> -->
+	</bean>
 
 	<!-- 項目自定义的Realm -->
-	<!-- <bean id="shiroDbRealm" class="org.bjtuse.egms.shiro.ShiroDbRealm">
-	</bean> -->
+	<bean id="shiroDbRealm" class="org.bjtuse.egms.shiro.ShiroDbRealm">
+	</bean>
 
 	<!-- Shiro Filter -->
 	<bean id="shiroFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
