@@ -26,7 +26,7 @@
 		                    <div class="form-group">
 		                        <label class="col-sm-2 control-label">工号</label>
 		                        <div class="col-sm-8">
-		                            <form:input path="loginName" cssClass="form-control" placeholder="工号" />
+		                            <form:input path="loginName" cssClass="form-control required" placeholder="工号" />
 		                        </div>
 		                        <c:if test="${not empty teacher.id }">
 			                        <a id="resetPassword" class="btn btn-warning">重置密码</a>

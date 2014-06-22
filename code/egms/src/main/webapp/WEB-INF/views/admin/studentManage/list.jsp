@@ -26,7 +26,7 @@
         <div id="page-wrapper">
             <div class="row">
                 <div class="col-lg-12">
-                    <h1 class="page-header">
+                    <h2 class="page-header">
                     	学生管理
                     	<a class="btn btn-xs btn-success" id="create" title="添加学生">
 				     		<span class="glyphicon glyphicon-plus-sign"></span>
@@ -39,7 +39,7 @@
 								<span class="glyphicon glyphicon-export"></span>&nbsp;导出学生信息
 							</button>
 						</form>
-                    </h1>
+                    </h2>
                 </div>
                 <!-- /.col-lg-12 -->
             </div>

@@ -43,13 +43,14 @@
 						<form:form id="loginForm" action="${ctx}/login" method="post" modelAttribute="loginForm" role="form">
 							<fieldset>
 								<div class="form-group">
-									<form:input path="loginName" placeholder="用户名" cssClass="form-control" />
+									<form:input path="loginName" placeholder="用户名" cssClass="form-control required" />
 								</div>
 								<div class="form-group">
-									<form:password path="password" placeholder="密码" cssClass="form-control" />
+									<form:password path="password" placeholder="密码" cssClass="form-control required" />
 								</div>
 								<div class="form-group">
-									<form:select path="roleName" cssClass="form-control">
+									<form:select path="roleName" cssClass="form-control required">
+										<form:option value="">--请选择角色类型--</form:option>
 										<form:options items="${allRoleType }" itemLabel="roleName"
 											itemValue="roleCode" />
 									</form:select>
@@ -57,7 +58,7 @@
 								<div class="form-group">
 									<div class="row">
 										<div class="col-sm-6">
-											<form:input path="validateCode" placeholder="验证码" cssClass="form-control" />
+											<form:input path="validateCode" placeholder="验证码" cssClass="form-control required" />
 										</div>
 										<div class="col-sm-6">
 											<img id="validateCodeImg" src="${ctx}/validateCode"

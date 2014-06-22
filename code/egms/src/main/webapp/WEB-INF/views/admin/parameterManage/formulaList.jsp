@@ -26,9 +26,9 @@
         <div id="page-wrapper">
             <div class="row">
                 <div class="col-lg-12">
-                    <h1 class="page-header">
+                    <h2 class="page-header">
                     	公式设置
-                    </h1>
+                    </h2>
                 </div>
                 <!-- /.col-lg-12 -->
             </div>
@@ -70,17 +70,40 @@
         </div>
     </div>
 	<script type="text/javascript">
+		$("#parameter").addClass("active");
+		$("#parameter").children("ul").addClass("in");
+	
 		$('.edit').click(function(){
 	   		var _this = $(this);
 	   		$("#wrapper").simpleRequestForm({
-	   			ajaxUrl:"${ctx}/admin/parameterManage/editFormula?id=" + $(this).attr("data-id") +"&ajax=true"
+	   			ajaxUrl:"${ctx}/admin/parameterManage/editFormula?id=" + $(this).attr("data-id") +"&ajax=true",
+	   			addRules:function(){
+	   				$('#formula').rules("add", {
+	   					remote:{
+	   						type:"get",
+	   						url:"${ctx}/admin/parameterManage/checkFormula",
+	   						data:{
+	   							formula:function(){
+	   								return $('#formula').val();
+	   							}
+	   						},
+	   						dataType:"html",
+	   						dataFilter:function(data, type){
+	   							if(data == "true"){
+	   								return true;
+	   							}else{
+	   								return false;
+	   							}
+	   						}
+	   					},
+	   					messages:{
+	   						remote:"公式填写错误"
+	   					}
+	   				})
+	   			}
 	   		});
 	   		
 	   	});
-		
-		if('' != '${error}'){
-			alert('${error}');
-		}
 	</script>
 </body>
 </html>

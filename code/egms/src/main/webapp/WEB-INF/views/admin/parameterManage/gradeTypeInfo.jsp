@@ -26,14 +26,14 @@
 							<div class="form-group">
 								<label for="name" class="col-sm-3 control-label">成绩类型名称</label>
 								<div class="col-sm-6">
-									<form:input path="certificateName" class="form-control" placeholder="成绩类型名称" />
+									<form:input path="certificateName" class="form-control required" placeholder="成绩类型名称" />
 								</div>
 							</div>
 							
 							<div class="form-group">
 								<label for="name" class="col-sm-3 control-label">上传类型</label>
 								<div class="col-sm-6">
-									<form:select path="uploadType" class="form-control">
+									<form:select path="uploadType" class="form-control required">
 										<form:option value="">--请选择上传类型--</form:option>
 										<form:option value="0">--教师上传--</form:option>
 										<form:option value="1">--学生上传--</form:option>

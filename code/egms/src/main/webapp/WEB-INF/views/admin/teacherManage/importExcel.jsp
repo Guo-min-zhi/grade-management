@@ -26,7 +26,7 @@
         <div id="page-wrapper">
             <div class="row">
                 <div class="col-lg-12">
-                    <h1 class="page-header">批量导入教师信息</h1>
+                    <h2 class="page-header">批量导入教师信息</h2>
                 </div>
                 <!-- /.col-lg-12 -->
             </div>
