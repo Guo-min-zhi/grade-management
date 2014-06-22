@@ -99,7 +99,20 @@ public class CertificateScore extends IdEntity<Long> {
 	@Column(name = "grade_c")
 	private Float gradeC;
 	
+	@Column(name = "oral_score")
+	private Float oralScore;
+	
+	@Column(name = "written_score")
+	private Float writtenScore;
+	
 	@Column(name = "grade_final", length = 100)
 	private String gradeFinal;
 	
+	/*
+	 * 0-成绩不全，无法计算综合成绩
+	 * 1-可以计算综合成绩，未导出
+	 * 2-可以计算综合成绩，已导出
+	 */
+	@Column(name = "grade_status")
+	private Integer gradeStatus;
 }

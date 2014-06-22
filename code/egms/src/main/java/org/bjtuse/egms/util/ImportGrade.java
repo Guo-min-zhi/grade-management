@@ -19,8 +19,12 @@ public class ImportGrade {
 	
 	private Integer gradeC;
 	
+	private Integer oralScore;
+	
+	private Integer writtenScore;
+	
 	public boolean checkGrade(){
-		if(sourceScore == null && gradeA == null && gradeB == null && gradeC == null){
+		if(sourceScore == null && gradeA == null && gradeB == null && gradeC == null && oralScore == null && writtenScore == null){
 			return false;
 		}
 		
