@@ -28,6 +28,7 @@ import org.bjtuse.egms.service.CertificateTypeManager;
 import org.bjtuse.egms.service.TeacherManager;
 import org.bjtuse.egms.service.WorkbookService;
 import org.bjtuse.egms.util.CertificateStatus;
+import org.bjtuse.egms.util.CommonUtil;
 import org.bjtuse.egms.util.ExceptionLog;
 import org.bjtuse.egms.util.ImportGrade;
 import org.bjtuse.egms.util.ProjectProperties;
@@ -195,6 +196,14 @@ public class TeacherController {
 		return "teacher/certificateInfo";
 	}
 
+	/**
+	 * 审核不通过 的逻辑，根据证书id
+	 * @param certificateId
+	 * @param comment
+	 * @param model
+	 * @param request
+	 * @return
+	 */
 	@RequestMapping(value = "/nopass", method = RequestMethod.POST)
 	public String noPass(Long certificateId, String comment, ModelMap model,
 			HttpServletRequest request) {
@@ -244,6 +253,13 @@ public class TeacherController {
 		return "redirect:/teacher/certificate/" + certificateId;
 	}
 
+	/**
+	 * 审核通过的逻辑，根据证书id
+	 * @param certificateId
+	 * @param request
+	 * @param attr
+	 * @return
+	 */
 	@RequestMapping(value = "/passCertificate", method = RequestMethod.POST)
 	public String passCertificate(Long certificateId,
 			HttpServletRequest request, RedirectAttributes attr) {
@@ -283,6 +299,11 @@ public class TeacherController {
 					.setVerifyTimes(certificateScore.getVerifyTimes() + 1);
 			Timestamp verifyTime = new Timestamp(System.currentTimeMillis());
 			certificateScore.setVerifyTimeB(verifyTime);
+			
+			// 根据translatedScore将成绩转换成五级十段分
+			certificateScore.setGradeFinal(CommonUtil.translateToFiveLevelGrade(certificateScore.getTranslatedScore()));
+			// 证书的可导出状态： 1-可以计算综合成绩，未导出
+			certificateScore.setGradeStatus(1);
 			certificateScoreManager.saveCertificateSocre(certificateScore);
 
 			log.info(
@@ -296,6 +317,12 @@ public class TeacherController {
 		return "redirect:/teacher/certificate/" + certificateId;
 	}
 
+	/**
+	 * 批量审核通过
+	 * @param certificates
+	 * @param request
+	 * @return
+	 */
 	@RequestMapping(value = "/pass", method = RequestMethod.POST)
 	@ResponseBody
 	public String passCertificates(String certificates,

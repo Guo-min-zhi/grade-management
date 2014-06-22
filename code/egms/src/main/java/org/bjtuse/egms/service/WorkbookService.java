@@ -864,6 +864,12 @@ public class WorkbookService {
 				Student student = score.getStudentInfo();
 				CertificateType scoreType = score.getCertificateType();
 				
+				// 更改score的状态：2-可以计算综合成绩，已导出
+				if(score.getGradeStatus() != 0){
+					score.setGradeStatus(2);
+					certificateScoreManager.saveCertificateSocre(score);					
+				}
+				
 				HSSFRow newRow = hssfSheet.createRow(i + 1);
 				newRow.createCell(0, HSSFCell.CELL_TYPE_STRING).setCellValue("" + (i + 1));
 				newRow.createCell(1, HSSFCell.CELL_TYPE_STRING).setCellValue(student.getLoginName());
