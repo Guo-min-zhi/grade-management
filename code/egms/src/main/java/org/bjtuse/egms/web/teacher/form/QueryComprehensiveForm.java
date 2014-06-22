@@ -18,4 +18,6 @@ public class QueryComprehensiveForm {
 	private Integer pageSize;
 	
 	private Integer certificateType;
+	
+	private Integer scoreStatus;
 }

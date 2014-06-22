@@ -654,7 +654,7 @@ public class TeacherController {
 			HttpServletRequest request, HttpServletResponse response,
 			String studentNumber, String studentName,
 			String startTime, String endTime,
-			Integer certificateType) {
+			Integer certificateType, Integer scoreStatus) {
 		ViewExcel viewExcel = new ViewExcel("学生综合成绩列表.xls");
 
 		QueryComprehensiveForm queryComprehensiveForm = new QueryComprehensiveForm();
@@ -663,6 +663,7 @@ public class TeacherController {
 		queryComprehensiveForm.setStartTime(startTime);
 		queryComprehensiveForm.setEndTime(endTime);
 		queryComprehensiveForm.setCertificateType(certificateType);
+		queryComprehensiveForm.setScoreStatus(scoreStatus);
 		
 		Map<String, Object> obj = null;
 		HSSFWorkbook hssfWorkbook = workbookService
@@ -692,11 +693,11 @@ public class TeacherController {
 		Teacher verifyTeacher = teacherManager.findTeacherByLoginName(loginName);*/
 		
 		// TODO
-		/*Teacher verifyTeacher = teacherManager.findTeacherByLoginName("teacher");
+		Teacher verifyTeacher = teacherManager.findTeacherByLoginName("teacher");
 
 		CertificateScore certificateScore = certificateScoreManager
 				.findCertificateScoreById(certificateId);
-		if (certificateScore.getVerifyTeacherB() != null
+		/*if (certificateScore.getVerifyTeacherB() != null
 				&& !certificateScore.getVerifyTeacherB().getLoginName()
 						.equals(verifyTeacher.getLoginName())) {
 			// 该用户为A老师，并且B老师已经评阅
@@ -709,7 +710,7 @@ public class TeacherController {
 			model.addAttribute("permission", "0");
 		} else {
 			model.addAttribute("permission", "1");
-		}
+		}*/
 		Student student = certificateScore.getStudentInfo();
 		Map<Integer, String> status = new HashMap<Integer, String>();
 		status.put(1, "待查验");
@@ -720,7 +721,7 @@ public class TeacherController {
 		status.put(CertificateStatus.IMPORT, "教务处系统导入");
 		model.addAttribute("mapStatus", status);
 		model.addAttribute("certificate", certificateScore);
-		model.addAttribute("student", student);*/
+		model.addAttribute("student", student);
 		
 		return "teacher/scoreInfo";
 	}

@@ -33,14 +33,14 @@
                 <!-- /.col-lg-12 -->
             </div>
 			
-            <div class="row">
+            <div class="row" style=" margin-bottom: 10px; ">
             	<div class="col-lg-12">
             		<form:form cssClass="form-inline" role="form" method="get" modelAttribute="queryComprehensiveForm">
 						<table class="searchTable">
 	                        <tr>
 	                            <td class="ItemLabel">学号:</td>
 	                            <td class="ItemControl">
-	                            	<form:input path="studentNumber" placeholder="学号" cssClass="Edit" cssStyle="width:80px;"/>
+	                            	<form:input path="studentNumber" placeholder="学号" cssClass="Edit" cssStyle="width:130px;"/>
 	                                <!-- <input type="text" class="Edit" style=" width: 80px; "> -->
 	                            </td>
 	                            <td class="ItemLabel">姓名:</td>
@@ -66,22 +66,33 @@
 	                                    	<option value="${ct.id }">${ct.certificateName }</option>
 	                                    </c:forEach>
 	                            	</form:select>
-	                                <%-- <select name="ct" id="ct" class="Edit">
-	                                    <option value="">--成绩类型--</option>
-	                                    <c:forEach items="${cts }" var="ct">
-	                                    	<option value="${ct.id }">${ct.certificateName }</option>
-	                                    </c:forEach>
-	                                </select> --%>
 	                            </td>
-	                            <td class="ItemLabel">每页显示:</td>
+	                        </tr>
+	                        <tr>
+	                        	<td class="ItemLabel">成绩状态</td>
+	                        	<td class="ItemControl">
+	                        		<form:select path="scoreStatus" cssClass="Edit" cssStyle="width:130px;">
+	                        			<form:option value="">--成绩状态--</form:option>
+	                        			<form:option value="0">无法计算综合成绩</form:option>
+	                        			<form:option value="1">满足条件，未导出</form:option>
+	                        			<form:option value="2">满足条件，已导出</form:option>
+	                        		</form:select>
+	                        		<!-- <select class="Edit" style="width:130px;">
+	                        			<option value="0">无法计算综合成绩</option>
+	                        			<option value="1">满足条件，未导出</option>
+	                        			<option value="2">满足条件，已导出</option>
+	                        		</select> -->
+	                        	</td>
+	                        	<td class="ItemLabel">每页显示:</td>
 	                            <td class="ItemControl">
-	                            	<form:select path="pageSize">
+	                            	<form:select path="pageSize" cssStyle="width:80px;">
 										<form:option value="10">10</form:option>
 										<form:option value="20">20</form:option>
 										<form:option value="50">50</form:option>
 										<form:option value="100">100</form:option>
 									</form:select>
 	                            </td>
+	                            <td></td>
 	                            <td>
 	                                <button type="submit" class="btn btn-primary btn-xs">查询</button>
 	                            </td>
@@ -134,7 +145,7 @@
 	                                    <td><c:out value="${certificate.certificateType.certificateName }"></c:out></td>
 	                                    <td><c:out value="${certificate.submitTime }"></c:out></td>
 	                                    <td>
-											<a href="${ctx }/teacher/score/${certificate.id}" class="btn btn-info btn-xs btn-info">
+											<a target="_blank" href="${ctx }/teacher/score/${certificate.id}" class="btn btn-info btn-xs btn-info">
 												<span class="glyphicon glyphicon-info-sign"></span>&nbsp;详情
 											</a>
 	                                        <a href="${ctx }/teacher/delete/${certificate.id}" class="btn btn-warning btn-xs btn-delete">
@@ -181,7 +192,8 @@
 				"&studentName="+getUrlVars()["studentName"] + 
 				"&startTime="+getUrlVars()["startTime"] + 
 				"&endTime="+getUrlVars()["endTime"] + 
-				"&certificateType="+getUrlVars()["certificateType"];
+				"&certificateType="+getUrlVars()["certificateType"] + 
+				"&scoreStatus="+getUrlVars()["scoreStatus"];
 			
 			return params;
 		}

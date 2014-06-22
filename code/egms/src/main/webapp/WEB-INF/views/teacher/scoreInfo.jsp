@@ -45,23 +45,7 @@
 
 					<div class="panel panel-primary">
 						<div class="panel-heading">
-							<c:if test="${permission == 1 }">
-								<div>
-									
-									<form action="${ctx }/teacher/passCertificate" method="post" class="form-inline">
-										<input type="hidden" value="${certificate.id }"
-											name="certificateId">
-										<button type="submit" class="btn btn-success btn-sm" id="passBtn">
-											<span class="glyphicon glyphicon-ok"></span> 审核通过
-										</button>
-										<button type="button" class="btn btn-danger btn-sm" id="noPassBtn"
-											data-toggle="modal" data-target="#infoModal">
-											<span class="glyphicon glyphicon-minus-sign"></span> 审核不通过
-										</button>
-									</form>
-									
-								</div>
-							</c:if>
+							综合成绩详细信息
 						</div>
 						<div class="panel-body" id="${certificate.id }">
 
@@ -108,11 +92,29 @@
 							<table class="table">
 								<tbody>
 									<tr>
+										<td><strong>第一学期成绩:</strong></td>
+										<td>${certificate.gradeA }</td>
+										<td><strong>第二学期成绩:</strong></td>
+										<td>${certificate.gradeB }</td>
+										<td><strong>第三学期成绩:</strong></td>
+										<td>${certificate.gradeC }</td>
+									</tr>
+									<tr>
+										<td><strong>口语成绩:</strong></td>
+										<td>${certificate.oralScore }</td>
+										<td><strong>笔试成绩:</strong></td>
+										<td>${certificate.writtenScore }</td>
+										<td><strong>等级分:</strong></td>
+										<td>${certificate.gradeFinal }</td>
+									</tr>
+									
+								
+									<tr>
 										<td><strong>证书类型:</strong></td>
 										<td>${certificate.certificateType.certificateName }</td>
 										<td><strong>证书成绩:</strong></td>
 										<td>${certificate.sourceScore }</td>
-										<td><strong>折算成绩:</strong></td>
+										<td><strong>综合成绩:</strong></td>
 										<td>${certificate.translatedScore }</td>
 									</tr>
 									<tr>

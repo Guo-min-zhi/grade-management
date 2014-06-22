@@ -42,6 +42,10 @@ public class ComprehensiveScoreSpecification {
 				if(queryComprehensiveForm.getCertificateType() != null){
 					temp = PredicateUtil.add(temp, cb.equal(root.get("certificateType"), queryComprehensiveForm.getCertificateType()), cb);
 				}
+				// 综合成绩状态查询
+				if(queryComprehensiveForm.getScoreStatus() != null){
+					temp = PredicateUtil.add(temp, cb.equal(root.get("gradeStatus"), queryComprehensiveForm.getScoreStatus()), cb);
+				}
 				// 时间段查询
 				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
 				String startTime = queryComprehensiveForm.getStartTime();
