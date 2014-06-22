@@ -82,17 +82,17 @@ public class ParameterManageController {
 	}
 	
 	@RequestMapping(value = "/saveFormula")
-	public String saveFormula(@ModelAttribute("gradeType") CertificateType certificateType){
+	public void saveFormula(@ModelAttribute("gradeType") CertificateType certificateType, Model model){
 		
 		if(certificateType != null){
 			//测试公式是否正确
-			try{
-				Expression exp = new Expression(certificateType.getFormula());
-				Map<String, BigDecimal> vars = new HashMap<String, BigDecimal>();
-				
-				int source = 530;
-				vars.put("x", new BigDecimal(source));
-				System.out.println("======================测试: score:" + source +"-----translated score:" + exp.eval(vars).intValue());
+//			try{
+//				Expression exp = new Expression(certificateType.getFormula());
+//				Map<String, BigDecimal> vars = new HashMap<String, BigDecimal>();
+//				
+//				int source = 530;
+//				vars.put("x", new BigDecimal(source));
+//				System.out.println("======================测试: score:" + source +"-----translated score:" + exp.eval(vars).intValue());
 //					if(certificateType.getCertificateName().contains("GRE")){
 //						int source = 1340;
 //						vars.put("x", new BigDecimal(source));
@@ -118,17 +118,14 @@ public class ParameterManageController {
 //						vars.put("x", new BigDecimal(source));
 //						System.out.println("======================国家四级: score:" + source +"-----translated score:" + exp.eval(vars).intValue());
 //					}
-				
-			}catch (Exception e) {
-				e.printStackTrace();
-				return "redirect:/admin/parameterManage/wrongFormula";
-			}
+//				
+//			}catch (Exception e) {
+//				e.printStackTrace();
+//				model.addAttribute("error", "公式填写错误!");
+//			}
 			
 			certificateTypeManager.save(certificateType);
 		}
-		
-		return "redirect:/admin/parameterManage/formulaList";
-		
 	}
 	
 	@RequestMapping(value = "/delete/{id}", method = RequestMethod.GET)

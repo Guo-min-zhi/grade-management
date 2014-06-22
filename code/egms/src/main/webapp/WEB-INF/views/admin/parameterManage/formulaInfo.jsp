@@ -30,6 +30,8 @@
 							<form:hidden path="certificateName"/>
 							<form:hidden path="uploadType"/>
 		            	</div>
+		            	<p style="color: red;">注：当综合成绩由多个成绩加权求和得出时，成绩的变量设置如下所示：</p>
+		            	<p style="color: red;">x1表示第一个学期成绩，x2表示第二学期成绩，x3表示第三学期成绩，x4表示口成绩，x5表示笔试成绩。</p>
 	                </div>
 	            </div>
 	            <div class="modal-footer">

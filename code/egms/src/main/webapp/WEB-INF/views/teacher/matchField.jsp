@@ -54,7 +54,7 @@
                         		</table>
                         	</div>
                         	<div class="col-sm-6">
-                        		<form action="" method="post">
+                        		<form action="${ctx }/teacher/doImportGrade" method="post">
                         			<table class="table table-bordered">
                         				<thead>
 		                                    <tr class="success">
@@ -76,7 +76,7 @@
 		                                	</tr>
 		                                	<tr>
 		                                		<td>2</td>
-		                                		<td>综合成绩</td>
+		                                		<td>四六级综合成绩</td>
 		                                		<td><input type="text" name="sourceScore"></td>
 		                                	</tr>
 		                                	<tr>
@@ -93,6 +93,16 @@
 		                                		<td>5</td>
 		                                		<td>第三学期成绩</td>
 		                                		<td><input type="text" name="gradeC"></td>
+		                                	</tr>
+		                                	<tr>
+		                                		<td>6</td>
+		                                		<td>口语成绩</td>
+		                                		<td><input type="text" name="oralScore"></td>
+		                                	</tr>
+		                                	<tr>
+		                                		<td>7</td>
+		                                		<td>笔试成绩</td>
+		                                		<td><input type="text" name="writtenScore"></td>
 		                                	</tr>
 		                                	<tr>
 		                                		<td>&nbsp;</td>

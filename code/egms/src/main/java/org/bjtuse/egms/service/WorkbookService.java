@@ -4,10 +4,12 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.math.BigDecimal;
+import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -33,6 +35,7 @@ import org.bjtuse.egms.repository.entity.RoleType;
 import org.bjtuse.egms.repository.entity.Student;
 import org.bjtuse.egms.repository.entity.Teacher;
 import org.bjtuse.egms.util.CertificateStatus;
+import org.bjtuse.egms.util.CommonUtil;
 import org.bjtuse.egms.util.ImportGrade;
 import org.bjtuse.egms.util.ImportResult;
 import org.bjtuse.egms.util.ProjectProperties;
@@ -82,7 +85,7 @@ public class WorkbookService {
 		
 		int rowSize = sheet.getLastRowNum();
 		//第一行是标题，从第二行开始
-		for(int i = 1; i < rowSize; i++){
+		for(int i = 1; i <= rowSize; i++){
 			Row row = sheet.getRow(i);
 			
 			String studentNum = null;
@@ -172,12 +175,12 @@ public class WorkbookService {
 					msgs.add("导入学生信息成功，学号:" + studentNum);
 					log.info("Import Stucent Account Info Successfully, studentNum:{}", studentNum);
 				}else{
-					msgs.add("更新学生信息成功，学号:" + studentNum);
+					msgs.add("学号:" + studentNum + "已存在");
 					log.info("Update Student Account Info Successfully, studentNum:{}", studentNum);
 				}
 				
-				studentManager.save(student);
 				successCount++;
+				studentManager.save(student);
 			}
 		}
 		
@@ -215,7 +218,7 @@ public class WorkbookService {
 		
 		int rowSize = sheet.getLastRowNum();
 		//第一行是标题，从第二行开始
-		for(int i = 1; i < rowSize; i++){
+		for(int i = 1; i <= rowSize; i++){
 			Row row = sheet.getRow(i);
 			
 			String course = null;
@@ -443,7 +446,7 @@ public class WorkbookService {
 		
 		log.info("readTeacherInfoFromSheet--------rowSize:{}", rowSize);
 		//第一行是标题，从第二行开始
-		for(int i = 1; i < rowSize; i++){
+		for(int i = 1; i <= rowSize; i++){
 			Row row = sheet.getRow(i);
 			String loginName = null;
 			String name = null;
@@ -634,6 +637,8 @@ public class WorkbookService {
 	
 	public ImportResult importGradeFromExcel(File file, ImportGrade importGrade, CertificateType certificateType) throws Exception{
 		ImportResult importResult = new ImportResult();
+		int successCount = 0;
+		List<String> msgs = new ArrayList<String>();
 		
 		Workbook workbook = null;
 		InputStream is = new FileInputStream(file);
@@ -647,7 +652,7 @@ public class WorkbookService {
 		Sheet sheet = workbook.getSheetAt(0);
 		
 		int max = sheet.getLastRowNum();
-		for(int i = 1; i < max; i++){
+		for(int i = 1; i <= max; i++){
 			Row row = sheet.getRow(i);
 			
 			String studentNum = null;
@@ -656,8 +661,11 @@ public class WorkbookService {
 			Double gradeA = null;
 			Double gradeB = null;
 			Double gradeC = null;
+			Double oralScore = null;
+			Double writtenScore = null;
 			
 			if(row.getCell(importGrade.getStudentNum()) != null){
+				row.getCell(importGrade.getStudentNum()).setCellType(Cell.CELL_TYPE_STRING);
 				studentNum = row.getCell(importGrade.getStudentNum()).getStringCellValue();
 			}
 			
@@ -668,38 +676,163 @@ public class WorkbookService {
 					student = new Student();
 					student.setLoginName(studentNum.trim());
 					student.setPassword(new Md5Hash(ProjectProperties.getProperty("defaultPassword")).toHex());
+					student.setStatus(1);
+					student.setRole(roleType);
+					
+					if(importGrade.getStudentName() != null && row.getCell(importGrade.getStudentName()) != null){
+						name = row.getCell(importGrade.getStudentName()).getStringCellValue();
+					}
+					
+					student.setName(name);
+					
+					studentManager.save(student);
 				}
 				
-				student.setStatus(1);
-				student.setRole(roleType);
+				CertificateScore certificateScore = certificateScoreManager.findCertificateScoreByStudentCertificateTypeAndStatus(student.getId(), certificateType.getId(), CertificateStatus.IMPORT);
 				
-				if(importGrade.getStudentName() != null && row.getCell(importGrade.getStudentName()) != null){
-					name = row.getCell(importGrade.getStudentName()).getStringCellValue();
+				if(certificateScore == null){
+					certificateScore = new CertificateScore();
+					//设置成绩状态初始值
+					certificateScore.setGradeStatus(0);
 				}
 				
-				student.setName(name);
-				
+				//针对四六级成绩只有一个原始成绩
 				if(importGrade.getSourceScore() != null){
 					if(row.getCell(importGrade.getSourceScore()) != null){
+						Expression expression = new Expression(certificateType.getFormula());
+						
 						sourceScore = row.getCell(importGrade.getSourceScore()).getNumericCellValue();
+						
+						Map<String, BigDecimal> variables = new HashMap<String, BigDecimal>();
+						variables.put("x", new BigDecimal(sourceScore));
+						Float sourceScoreF = new BigDecimal(sourceScore).setScale(2).floatValue();
+						Float translatedScore = expression.eval(variables).setScale(0, BigDecimal.ROUND_UP).floatValue();
+						
+						certificateScore.setVerifyTimes(0);
+						certificateScore.setCertificateType(certificateType);
+						certificateScore.setSourceScore(sourceScoreF);
+						certificateScore.setTranslatedScore(translatedScore);
+						certificateScore.setStudentInfo(student);
+						certificateScore.setGradeFinal(CommonUtil.translateToFiveLevelGrade(translatedScore));
+						
+						DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+						Date now = Calendar.getInstance().getTime();
+						String importTime = df.format(now);
+						
+						String comment = "从教务处系统导入，导入时间：" + importTime;
+						
+						certificateScore.setCommentA(comment);
+						certificateScore.setSubmitTime(new Timestamp(now.getTime()));
+						
+						//将状态设置为从教务处系统导入
+						certificateScore.setStatus(CertificateStatus.IMPORT);
+						
+						certificateScoreManager.saveCertificateSocre(certificateScore);
+						
+						successCount++;
+						msgs.add("成功导入成绩，学号:" + studentNum + ",成绩:" + certificateScore.getSourceScore());
 					}
 				}else{
+					boolean x1 = false;
+					boolean x2 = false;
+					boolean x3 = false;
+					boolean x4 = false;
+					boolean x5 = false;
+					
+					StringBuffer sb = new StringBuffer("成功导入成绩,学号:").append(studentNum);
+					
+					String formula = certificateType.getFormula();
+					if(formula.contains("x1")){
+						x1 = true;
+					}
+					if(formula.contains("x2")){
+						x2 = true;
+					}
+					if(formula.contains("x3")){
+						x3 = true;
+					}
+					if(formula.contains("x4")){
+						x4 = true;
+					}
+					if(formula.contains("x5")){
+						x5 = true;
+					}
+					
 					if(importGrade.getGradeA() != null && row.getCell(importGrade.getGradeA()) != null){
 						gradeA = row.getCell(importGrade.getGradeA()).getNumericCellValue();
+						certificateScore.setGradeA(gradeA.floatValue());
+						sb.append(",第一学期成绩:").append(certificateScore.getGradeA());
 					}
-					
 					if(importGrade.getGradeB() != null && row.getCell(importGrade.getGradeB()) != null){
 						gradeB = row.getCell(importGrade.getGradeB()).getNumericCellValue();
+						certificateScore.setGradeB(gradeB.floatValue());
+						sb.append(",第二学期成绩:").append(certificateScore.getGradeB());
 					}
-					
 					if(importGrade.getGradeC() != null && row.getCell(importGrade.getGradeC()) != null){
 						gradeC = row.getCell(importGrade.getGradeC()).getNumericCellValue();
+						certificateScore.setGradeC(gradeC.floatValue());
+						sb.append(",第三学期成绩:").append(certificateScore.getGradeC());
 					}
+					if(importGrade.getOralScore() != null && row.getCell(importGrade.getOralScore()) != null){
+						oralScore = row.getCell(importGrade.getOralScore()).getNumericCellValue();
+						certificateScore.setOralScore(oralScore.floatValue());
+						sb.append(",口语成绩:").append(certificateScore.getOralScore());
+					}
+					if(importGrade.getWrittenScore() != null && row.getCell(importGrade.getWrittenScore()) != null){
+						writtenScore = row.getCell(importGrade.getWrittenScore()).getNumericCellValue();
+						certificateScore.setWrittenScore(writtenScore.floatValue());
+						sb.append(",笔试成绩:").append(certificateScore.getWrittenScore());
+					}
+					
+					certificateScore.setStudentInfo(student);
+					certificateScore.setCertificateType(certificateType);
+					DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+					Date now = Calendar.getInstance().getTime();
+					String importTime = df.format(now);
+					
+					String comment = "从教务处系统导入，导入时间：" + importTime;
+					
+					certificateScore.setCommentA(comment);
+					//将状态设置为从教务处系统导入
+					certificateScore.setStatus(CertificateStatus.IMPORT);
+					
+					//判断是否可以计算综合成绩，如果可以则计算出综合成绩
+					if(CommonUtil.canGetTranslatedScore(x1, x2, x3, x4, x5, certificateScore)){
+						//可以计算综合成绩，设置成绩的状态为1
+						certificateScore.setGradeStatus(1);
+						
+						Map<String, BigDecimal> variables = CommonUtil.prepareVariables(x1, x2, x3, x4, x5, certificateScore);
+						
+						Expression expression = new Expression(formula);
+						Float translatedScore = expression.eval(variables).setScale(0, BigDecimal.ROUND_UP).floatValue();
+						
+						certificateScore.setVerifyTimes(0);
+						certificateScore.setTranslatedScore(translatedScore);
+						certificateScore.setGradeFinal(CommonUtil.translateToFiveLevelGrade(translatedScore));
+						
+						certificateScore.setSubmitTime(new Timestamp(now.getTime()));
+					}
+					
+					certificateScoreManager.saveCertificateSocre(certificateScore);
+					successCount++;
+					msgs.add(sb.toString());
 				}
 				
+				log.info("Import CertificateType:{}, StudentNum:{}, SourceSocre:{}, GradeA:{}, GradeB:{}, GradeC{}, OralScore:{}, WrittenScore:{}",
+									certificateType.getCertificateName(),
+									studentNum,
+									certificateScore.getSourceScore(),
+									certificateScore.getGradeA(),
+									certificateScore.getGradeB(),
+									certificateScore.getGradeC(),
+									certificateScore.getOralScore(),
+									certificateScore.getWrittenScore());
 			}
 		}
 		
+		importResult.setSuccessCount(successCount);
+		importResult.setMessages(msgs);
+		is.close();
 		return importResult;
 	}
 	

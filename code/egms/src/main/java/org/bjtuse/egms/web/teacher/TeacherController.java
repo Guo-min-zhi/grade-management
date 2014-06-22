@@ -31,6 +31,7 @@ import org.bjtuse.egms.util.CertificateStatus;
 import org.bjtuse.egms.util.ExceptionLog;
 import org.bjtuse.egms.util.ImportGrade;
 import org.bjtuse.egms.util.ProjectProperties;
+import org.bjtuse.egms.util.ImportResult;
 import org.bjtuse.egms.util.RequestParamsUtil;
 import org.bjtuse.egms.web.admin.ViewExcel;
 import org.bjtuse.egms.web.teacher.form.CertificateComplexQueryForm;
@@ -529,6 +530,8 @@ public class TeacherController {
 			String tempFile = request.getParameter("tempFile");
 			String ct = request.getParameter("ct");
 			
+			CertificateType certificateType = certificateTypeManager.getCertificateById(Integer.parseInt(ct));
+			
 			String ctxPath = request.getSession().getServletContext().getRealPath("/")
 					+ File.separatorChar + "temp" + File.separator + loginName;
 			
@@ -539,7 +542,7 @@ public class TeacherController {
 				
 				return "teacher/importGradeResult";
 			}else{
-				importGrade.setStudentName(Integer.parseInt(studentNum));
+				importGrade.setStudentNum(Integer.parseInt(studentNum));
 			}
 			
 			String studentName = request.getParameter("studentName").trim();
@@ -567,6 +570,16 @@ public class TeacherController {
 				importGrade.setGradeC(Integer.parseInt(gradeC));
 			}
 			
+			String oralScore = request.getParameter("oralScore");
+			if(StringUtils.isNotBlank(oralScore)){
+				importGrade.setOralScore(Integer.parseInt(oralScore));
+			}
+			
+			String writtenScore = request.getParameter("writtenScore");
+			if(StringUtils.isNotBlank(writtenScore)){
+				importGrade.setWrittenScore(Integer.parseInt(writtenScore));
+			}
+			
 			if(!importGrade.checkGrade()){
 				model.addAttribute("errorMsg", "没有选择相应的成绩字段！");
 				
@@ -575,10 +588,15 @@ public class TeacherController {
 			
 			File tempExcel = new File(ctxPath + File.separatorChar + tempFile);
 			
+			ImportResult importResult = workbookService.importGradeFromExcel(tempExcel, importGrade, certificateType);
 			
+			model.addAttribute("result", importResult);
 		}catch (NumberFormatException e) {
 			ExceptionLog.log(e);
 			model.addAttribute("errorMsg", "Excel表字段序号填写错误！");
+		}catch (Exception e) {
+			ExceptionLog.log(e);
+			model.addAttribute("errorMsg", "导入成绩错误！");
 		}
 		
 		return "teacher/importGradeResult";
