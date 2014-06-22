@@ -711,7 +711,11 @@ public class WorkbookService {
 						certificateScore.setVerifyTimes(0);
 						certificateScore.setCertificateType(certificateType);
 						certificateScore.setSourceScore(sourceScoreF);
-						certificateScore.setTranslatedScore(translatedScore);
+						if(translatedScore <= 0){
+							certificateScore.setTranslatedScore(0.0f);
+						}else{
+							certificateScore.setTranslatedScore(translatedScore);
+						}
 						certificateScore.setStudentInfo(student);
 						certificateScore.setGradeFinal(CommonUtil.translateToFiveLevelGrade(translatedScore));
 						
@@ -726,6 +730,9 @@ public class WorkbookService {
 						
 						//将状态设置为从教务处系统导入
 						certificateScore.setStatus(CertificateStatus.IMPORT);
+						
+						//因为四六级只有一个成绩，所以设置成绩状态为可以计算综合成绩
+						certificateScore.setGradeStatus(1);
 						
 						certificateScoreManager.saveCertificateSocre(certificateScore);
 						
@@ -888,7 +895,7 @@ public class WorkbookService {
 				}
 				
 				if(score.getSubmitTime() != null){
-					newRow.createCell(6, HSSFCell.CELL_TYPE_STRING).setCellValue(score.getSubmitTime().toString());
+					newRow.createCell(6, HSSFCell.CELL_TYPE_STRING).setCellValue(CommonUtil.transferDateToString(score.getSubmitTime().getTime()));
 				}
 			}
 		}
