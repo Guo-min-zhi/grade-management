@@ -30,6 +30,7 @@ import org.bjtuse.egms.service.WorkbookService;
 import org.bjtuse.egms.util.CertificateStatus;
 import org.bjtuse.egms.util.ExceptionLog;
 import org.bjtuse.egms.util.ImportGrade;
+import org.bjtuse.egms.util.ProjectProperties;
 import org.bjtuse.egms.util.RequestParamsUtil;
 import org.bjtuse.egms.web.admin.ViewExcel;
 import org.bjtuse.egms.web.teacher.form.CertificateComplexQueryForm;
@@ -606,13 +607,103 @@ public class TeacherController {
 		model.addAttribute("pageObjects", certificateScoreList);
 		model.addAttribute("queryComprehensiveForm", queryComprehensiveForm);
 		model.addAttribute("pageUrl", RequestParamsUtil.getCurrentURL(request));
+		model.addAttribute("password", ProjectProperties.getProperty("deletePassword"));
 		return "teacher/manageComprehensive";
 	}
 	
-	@RequestMapping(value="delete", method=RequestMethod.GET)
-	public String deleteOneCertificate(Integer id){
+	/**
+	 * 根据id删除成绩 
+	 * @param id
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value="/delete/{id}", method=RequestMethod.GET)
+	public String deleteOneCertificate(@PathVariable("id") Long id, HttpServletRequest request){
+		certificateScoreManager.deleteCertificateScoreById(id);
 		
-		return "teacher/manageComprehensive";
+		log.info("[{}] delete student whose id is : {}", request.getAttribute("loginName"), id);
+		return "redirect:/teacher/manage";
 	}
 	
+	/**
+	 * 导出查询出来的综合成绩信息
+	 * @param model
+	 * @param request
+	 * @param response
+	 */
+	@RequestMapping(value = "/exportComprehensiveExcel", method = RequestMethod.GET)
+	public void exportComprehensiveExcel(Model model,
+			HttpServletRequest request, HttpServletResponse response,
+			String studentNumber, String studentName,
+			String startTime, String endTime,
+			Integer certificateType) {
+		ViewExcel viewExcel = new ViewExcel("学生综合成绩列表.xls");
+
+		QueryComprehensiveForm queryComprehensiveForm = new QueryComprehensiveForm();
+		queryComprehensiveForm.setStudentNumber(studentNumber);
+		queryComprehensiveForm.setStudentName(studentName);
+		queryComprehensiveForm.setStartTime(startTime);
+		queryComprehensiveForm.setEndTime(endTime);
+		queryComprehensiveForm.setCertificateType(certificateType);
+		
+		Map<String, Object> obj = null;
+		HSSFWorkbook hssfWorkbook = workbookService
+				.generateComperehensiveScoreWorkbook(certificateScoreManager.findComprehensiveScoreToExport(queryComprehensiveForm));
+		try {
+			viewExcel.buildExcelDocument(obj, hssfWorkbook, request, response);
+		} catch (Exception e) {
+			ExceptionLog.log(e);
+		}
+
+		model.addAttribute("viewExcel", viewExcel);
+	}
+	
+	/**
+	 * 跳转到 综合成绩详情页面
+	 * 
+	 * @param certificateId
+	 * @param model
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value = "/score/{certificateId}", method = RequestMethod.GET)
+	public String comprehensiveScoreInfo(@PathVariable Long certificateId,
+			ModelMap model, HttpServletRequest request) {
+
+		/*String loginName = request.getSession().getAttribute("loginName").toString();
+		Teacher verifyTeacher = teacherManager.findTeacherByLoginName(loginName);*/
+		
+		// TODO
+		/*Teacher verifyTeacher = teacherManager.findTeacherByLoginName("teacher");
+
+		CertificateScore certificateScore = certificateScoreManager
+				.findCertificateScoreById(certificateId);
+		if (certificateScore.getVerifyTeacherB() != null
+				&& !certificateScore.getVerifyTeacherB().getLoginName()
+						.equals(verifyTeacher.getLoginName())) {
+			// 该用户为A老师，并且B老师已经评阅
+			model.addAttribute("permission", "0");
+		} else if (certificateScore.getVerifyTeacherB() != null
+				&& certificateScore.getVerifyTeacherB().getLoginName()
+						.equals(verifyTeacher.getLoginName())
+				&& certificateScore.getStatus() == CertificateStatus.NOPASSCHECKED) {
+			// 该用户为B老师, 但A老师已经将证书改为不通过
+			model.addAttribute("permission", "0");
+		} else {
+			model.addAttribute("permission", "1");
+		}
+		Student student = certificateScore.getStudentInfo();
+		Map<Integer, String> status = new HashMap<Integer, String>();
+		status.put(1, "待查验");
+		status.put(2, "查验通过");
+		status.put(3, "查验不通过");
+		status.put(4, "一审通过");
+		status.put(5, "已归档");
+		status.put(CertificateStatus.IMPORT, "教务处系统导入");
+		model.addAttribute("mapStatus", status);
+		model.addAttribute("certificate", certificateScore);
+		model.addAttribute("student", student);*/
+		
+		return "teacher/scoreInfo";
+	}
 }

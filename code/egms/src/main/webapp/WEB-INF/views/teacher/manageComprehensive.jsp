@@ -103,13 +103,17 @@
             <div class="row">
                 <div class="col-lg-12">
                     <div class="panel panel-default">
-                        <div class="panel-heading"><button class="btn btn-primary btn-xs">导出</button></div>
+                        <div class="panel-heading">
+                        	<%-- <form action="${ctx }/teacher/exportComprehensiveExcel" method="post"> --%>
+	                        	<button type="button" class="btn btn-primary btn-xs" id="exportComBtn">
+									<span class="glyphicon glyphicon-export"></span>&nbsp;导出成绩信息
+								</button>
+							<!-- </form> -->
+                        </div>
                         <table class="table table-bordered" style="font-size:12px;">
                             <thead>
                                 <tr class="success">
-                                    <th style=" width: 20px; ">
-                                        <input type="checkbox">
-                                    </th>
+                                    <th style=" width: 20px; "></th>
                                     <th>学号</th>
                                     <th>姓名</th>
                                     <th>综合成绩</th>
@@ -122,9 +126,7 @@
                             <tbody>
                             	<c:forEach items="${pageObjects.content}" var="certificate" varStatus="status">
 	                                <tr id="${certificate.id }">
-	                                    <td>
-	                                        <input type="checkbox">
-	                                    </td>
+	                                    <td><c:out value="${status.count }"/></td>
 	                                    <td><c:out value="${certificate.studentInfo.loginName }"></c:out></td>
 	                                    <td><c:out value="${certificate.studentInfo.name }"></c:out></td>
 	                                    <td><c:out value="${certificate.translatedScore }"></c:out></td>
@@ -132,9 +134,12 @@
 	                                    <td><c:out value="${certificate.certificateType.certificateName }"></c:out></td>
 	                                    <td><c:out value="${certificate.submitTime }"></c:out></td>
 	                                    <td>
-	                                        <button type="submit" class="btn btn-default btn-xs btn-delete">
-                                        		<span class="glyphicon glyphicon-remove"></span>
-	                                        </button>
+											<a href="${ctx }/teacher/score/${certificate.id}" class="btn btn-info btn-xs btn-info">
+												<span class="glyphicon glyphicon-info-sign"></span>&nbsp;详情
+											</a>
+	                                        <a href="${ctx }/teacher/delete/${certificate.id}" class="btn btn-warning btn-xs btn-delete">
+												<span class="glyphicon glyphicon-remove"></span>&nbsp;删除
+											</a>
 	                                    </td>
 	                                </tr>
                             	</c:forEach>
@@ -150,12 +155,38 @@
     </div>
 	<script type="text/javascript">
 	$(function(){
-		$(".btn-delete").click(function(){
+		function getUrlVars(){
+		    var vars = [], hash;
+		    var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
+		    for(var i = 0; i < hashes.length; i++){
+		        hash = hashes[i].split('=');
+		        vars.push(hash[0]);
+		        vars[hash[0]] = hash[1];
+		    }
+		    return vars;
+		}
+
+		$(".btn-delete").click(function(e){
 			var password = prompt("删除需要管理员密码 ");
-		    if (password != null && password != ""){
+		    if (password != null && password != "" && password == ${password}){
 		    	
+		    }else{
+		    	e.preventDefault();
 		    }
 		  
+		});
+		
+		function parameters(){
+			var params = "studentNumber="+getUrlVars()["studentNumber"] + 
+				"&studentName="+getUrlVars()["studentName"] + 
+				"&startTime="+getUrlVars()["startTime"] + 
+				"&endTime="+getUrlVars()["endTime"] + 
+				"&certificateType="+getUrlVars()["certificateType"];
+			
+			return params;
+		}
+		$("#exportComBtn").click(function(){
+			location.href = "${ctx }/teacher/exportComprehensiveExcel?"+parameters();
 		});
 	});
 	</script>

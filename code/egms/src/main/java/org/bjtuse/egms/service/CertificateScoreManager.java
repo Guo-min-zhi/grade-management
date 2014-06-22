@@ -68,6 +68,10 @@ public class CertificateScoreManager {
 		return certificateScoreDao.findCertificateScoreToExport();
 	}
 	
+	public List<CertificateScore> findComprehensiveScoreToExport(QueryComprehensiveForm queryComprehensiveForm){
+		return certificateScoreDao.findAll(Specifications.where(ComprehensiveScoreSpecification.comprehensiveSpecification(queryComprehensiveForm)));
+	}
+	
 	/**
 	 * 复杂查询分页
 	 * @param queryComplexForm

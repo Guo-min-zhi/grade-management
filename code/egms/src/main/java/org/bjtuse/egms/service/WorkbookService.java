@@ -702,4 +702,57 @@ public class WorkbookService {
 		
 		return importResult;
 	}
+	
+	
+	/**
+	 * 生成综合成绩excel
+	 * @param studentList
+	 * @return
+	 */
+	public HSSFWorkbook generateComperehensiveScoreWorkbook(List<CertificateScore> scoreList){
+		HSSFWorkbook hssfWorkbook = new HSSFWorkbook();
+		
+		HSSFSheet hssfSheet = hssfWorkbook.createSheet("学生综合成绩");
+		
+		HSSFRow firstRow = hssfSheet.createRow(0);
+		
+		firstRow.createCell(0, HSSFCell.CELL_TYPE_STRING).setCellValue("序号");
+		firstRow.createCell(1, HSSFCell.CELL_TYPE_STRING).setCellValue("学号");
+		firstRow.createCell(2, HSSFCell.CELL_TYPE_STRING).setCellValue("姓名");
+		firstRow.createCell(3, HSSFCell.CELL_TYPE_STRING).setCellValue("综合成绩");
+		firstRow.createCell(4, HSSFCell.CELL_TYPE_STRING).setCellValue("等级分");
+		firstRow.createCell(5, HSSFCell.CELL_TYPE_STRING).setCellValue("来源");
+		firstRow.createCell(6, HSSFCell.CELL_TYPE_STRING).setCellValue("认定日期");
+		
+		if(scoreList != null && scoreList.size() > 0){
+			log.info("generateCmprehensiveScoreWorkbook-------scoreList.size:{}", scoreList.size());
+			for(int i = 0;i <scoreList.size(); i++){
+				CertificateScore score = scoreList.get(i);
+				Student student = score.getStudentInfo();
+				CertificateType scoreType = score.getCertificateType();
+				
+				HSSFRow newRow = hssfSheet.createRow(i + 1);
+				newRow.createCell(0, HSSFCell.CELL_TYPE_STRING).setCellValue("" + (i + 1));
+				newRow.createCell(1, HSSFCell.CELL_TYPE_STRING).setCellValue(student.getLoginName());
+				
+				if(student.getName() != null){
+					newRow.createCell(2, HSSFCell.CELL_TYPE_STRING).setCellValue(student.getName());
+				}
+				if(score.getTranslatedScore() != null){
+					newRow.createCell(3, HSSFCell.CELL_TYPE_NUMERIC).setCellValue(score.getTranslatedScore());
+				}
+				if(score.getGradeFinal() != null){
+					newRow.createCell(4, HSSFCell.CELL_TYPE_STRING).setCellValue(score.getGradeFinal());
+				}
+				if(scoreType != null && scoreType.getCertificateName() != null){
+					newRow.createCell(5, HSSFCell.CELL_TYPE_STRING).setCellValue(scoreType.getCertificateName());
+				}
+				
+				if(score.getSubmitTime() != null){
+					newRow.createCell(6, HSSFCell.CELL_TYPE_STRING).setCellValue(score.getSubmitTime().toString());
+				}
+			}
+		}
+		return hssfWorkbook;
+	}
 }
