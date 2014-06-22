@@ -77,6 +77,10 @@
 	   		});
 	   		
 	   	});
+		
+		if('' != '${error}'){
+			alert('${error}');
+		}
 	</script>
 </body>
 </html>
