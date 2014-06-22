@@ -76,7 +76,7 @@
 		                                	</tr>
 		                                	<tr>
 		                                		<td>2</td>
-		                                		<td>四六级综合成绩</td>
+		                                		<td>四六级考试成绩</td>
 		                                		<td><input type="text" name="sourceScore"></td>
 		                                	</tr>
 		                                	<tr>
