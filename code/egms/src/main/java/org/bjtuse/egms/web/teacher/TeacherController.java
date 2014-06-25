@@ -649,6 +649,13 @@ public class TeacherController {
 		return "teacher/manageComprehensive";
 	}
 	
+	@RequestMapping(value="validateP", method=RequestMethod.POST)
+	@ResponseBody
+	public Boolean getPassword(String password, HttpServletResponse response) throws Exception{
+		log.info("Get password = "+password);
+		return ProjectProperties.getProperty("deletePassword").equals(password);
+	}
+	
 	/**
 	 * 根据id删除成绩 
 	 * @param id
@@ -659,7 +666,7 @@ public class TeacherController {
 	public String deleteOneCertificate(@PathVariable("id") Long id, HttpServletRequest request){
 		certificateScoreManager.deleteCertificateScoreById(id);
 		
-		log.info("[{}] delete student whose id is : {}", request.getAttribute("loginName"), id);
+		log.info("[{}] delete student whose id is : {}", request.getSession().getAttribute("loginName"), id);
 		return "redirect:/teacher/manage";
 	}
 	

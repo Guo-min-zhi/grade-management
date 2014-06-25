@@ -190,12 +190,22 @@
 
 		$(".btn-delete").click(function(e){
 			var password = prompt("删除需要管理员密码 ");
-		    if (password != null && password != "" && password == ${password}){
-		    	
-		    }else{
-		    	e.preventDefault();
-		    }
-		  
+			$.ajax({
+				async: false,
+				type: "POST",
+				url: "${ctx}/teacher/validateP",
+				data: {
+					password: password
+				},
+				success: function(pass){
+		    		if(!pass){
+		    			e.preventDefault();		
+		    		}
+				},
+				error: function(data){
+					alert("删除出现错误！");
+				},
+			});
 		});
 		
 		function parameters(){
@@ -213,7 +223,24 @@
 		});
 		
 		$("#deleteComBtn").click(function(){
-			location.href = "${ctx}/teacher/deleteComprehensiveExcelData?"+parameters();
+			var password = prompt("删除需要管理员密码 ");
+			$.ajax({
+				async: false,
+				type: "POST",
+				url: "${ctx}/teacher/validateP",
+				data: {
+					password: password
+				},
+				success: function(pass){
+		    		if(pass){
+		    			location.href = "${ctx}/teacher/deleteComprehensiveExcelData?"+parameters();
+		    		}
+				},
+				error: function(data){
+					alert("删除出现错误！");
+				},
+			});
+			
 		});
 		
 		//负责checkbox的全选和全不选
@@ -232,19 +259,36 @@
 	    			certificates.push($(o).prop("value"));
     			}
     		});
+    		var password = prompt("删除需要管理员密码 ");
     		$.ajax({
-				type: "post",
-				url: "${ctx}/teacher/delete",
+				async: false,
+				type: "POST",
+				url: "${ctx}/teacher/validateP",
 				data: {
-					certificates : certificates.join(",")
+					password: password
 				},
-				success: function(data){
-		    		window.location.reload();
+				success: function(pass){
+		    		if(pass){
+		    			$.ajax({
+		    				type: "post",
+		    				url: "${ctx}/teacher/delete",
+		    				data: {
+		    					certificates : certificates.join(",")
+		    				},
+		    				success: function(data){
+		    		    		window.location.reload();
+		    				},
+		    				error: function(data){
+		    					alert("删除出现错误！");
+		    				},
+		    			});	
+		    		}
 				},
 				error: function(data){
 					alert("删除出现错误！");
 				},
 			});
+    		
 		});
 	});
 	</script>
