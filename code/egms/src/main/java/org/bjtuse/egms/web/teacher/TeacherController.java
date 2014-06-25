@@ -105,8 +105,7 @@ public class TeacherController {
 		certificateScoreList = certificateScoreManager.getPaged(queryFastForm,
 				RequestParamsUtil.getPageRequest(page, pageSize));
 
-		List<CertificateType> types = certificateTypeManager
-				.getAllCertificateType();
+		List<CertificateType> types = certificateTypeManager.getCertificateTypesImportByStudent();
 
 		model.addAttribute("certificateTypes", types);
 		Map<Integer, String> status = new HashMap<Integer, String>();
@@ -466,8 +465,7 @@ public class TeacherController {
 				queryComplexForm,
 				RequestParamsUtil.getPageRequest(page, pageSize));
 
-		List<CertificateType> types = certificateTypeManager
-				.getAllCertificateType();
+		List<CertificateType> types = certificateTypeManager.getCertificateTypesImportByStudent();
 
 		model.addAttribute("certificateTypes", types);
 		Map<Integer, String> status = new HashMap<Integer, String>();
@@ -635,7 +633,7 @@ public class TeacherController {
 			@RequestParam(required = false, value = "page") Integer page,
 			Model model, HttpServletRequest request){
 		// 获得成绩来源里的成绩类型
-		List<CertificateType> cts = certificateTypeManager.getCertificateTypesImportByTeacher();
+		List<CertificateType> cts = certificateTypeManager.getAllCertificateType();
 		model.addAttribute("cts", cts);
 		
 		int pageSize = 10;

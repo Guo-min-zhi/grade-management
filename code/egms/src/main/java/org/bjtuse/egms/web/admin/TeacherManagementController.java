@@ -128,7 +128,7 @@ public class TeacherManagementController {
 			@RequestParam(value = "file") MultipartFile file,
 			Model model,
 			HttpServletRequest request) {
-		log.info("[{}] execute batchImportTeacherAccountInfo operation.",	request.getAttribute("loginName"));
+		log.info("[{}] execute batchImportTeacherAccountInfo operation.",	request.getSession().getAttribute("loginName"));
 		
 		try {
 			if(!file.isEmpty()){

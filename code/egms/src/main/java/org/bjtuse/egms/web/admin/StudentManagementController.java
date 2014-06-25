@@ -126,7 +126,7 @@ public class StudentManagementController {
 	
 	@RequestMapping(value = "/doImport", method = RequestMethod.POST)
 	public String importStudentAccountInfo(@RequestParam(value = "file") MultipartFile file, Model model, HttpServletRequest request){
-		log.info("[{}] execute batchImportStudentAccountInfo operation.",	request.getAttribute("loginName"));
+		log.info("[{}] execute batchImportStudentAccountInfo operation.",	request.getSession().getAttribute("loginName"));
 		
 		try{
 			if(!file.isEmpty()){

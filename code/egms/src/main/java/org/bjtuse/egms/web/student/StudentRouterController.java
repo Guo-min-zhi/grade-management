@@ -171,11 +171,11 @@ public class StudentRouterController {
 				certificateScore = certificateScoreManager.findCertificateScoreById(id);
 				model.addAttribute("certificate", certificateScore);
 			}
-			List<CertificateType> allCertificateType = certificateTypeManager.getAllCertificateType();
+			List<CertificateType> allCertificateType = certificateTypeManager.getCertificateTypesImportByStudent();
 			model.addAttribute("certificateTypes", allCertificateType);
 		}else{
 			model.addAttribute("result", "notComplete");
-			List<CertificateType> allCertificateType = certificateTypeManager.getAllCertificateType();
+			List<CertificateType> allCertificateType = certificateTypeManager.getCertificateTypesImportByStudent();
 			model.addAttribute("certificateTypes", allCertificateType);
 		}
 		

@@ -87,9 +87,8 @@ public class StudentFunctionController {
 	@ResponseBody
 	public String uploadPersonPhoto(@RequestParam MultipartFile file, String studentId, 
 			ModelMap model, HttpServletRequest request) {
-		/*String loginName = request.getSession().getAttribute("loginName").toString();
-		Student student = studentManager.findUserByLoginName(loginName);*/
-		Student student = studentManager.findUserByLoginName("test");
+		String loginName = request.getSession().getAttribute("loginName").toString();
+		Student student = studentManager.findUserByLoginName(loginName);
 
 		String projectName = request.getContextPath();
 		String ctxPath = request.getSession().getServletContext()
@@ -215,6 +214,7 @@ public class StudentFunctionController {
 			
 			certificateScore.setCheckWebsiteScreenshot(projectName+"/certificate-check/"+ newFilename2);
 			certificateScore.setStatus(new Integer(1));
+			certificateScore.setGradeStatus(0);
 			SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy-MM-dd");
 			
 			try {

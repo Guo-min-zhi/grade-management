@@ -11,6 +11,7 @@ import javax.persistence.criteria.Root;
 
 import org.apache.commons.lang3.StringUtils;
 import org.bjtuse.egms.repository.entity.CertificateScore;
+import org.bjtuse.egms.repository.entity.CertificateType;
 import org.bjtuse.egms.repository.entity.Student;
 import org.bjtuse.egms.util.PredicateUtil;
 import org.bjtuse.egms.web.teacher.form.CertificateFastQueryForm;
@@ -31,6 +32,9 @@ public class CertificateScoreSpecifications {
 				Path<String> collegeExp = certificateScoreJoin.get("college");
 				Path<String> gradeExp = certificateScoreJoin.get("grade");
 				Path<String> majorExp = certificateScoreJoin.get("major");
+				
+				Join<CertificateScore, CertificateType> typeJoin = root.join(root.getModel().getSingularAttribute("certificateType",CertificateType.class),  JoinType.LEFT);
+				Path<Integer> uploadTypeExp = typeJoin.get("uploadType");
 				
 				Predicate temp = cb.conjunction();;
 				if(StringUtils.isNotBlank(queryFastForm.getStudentNumber())){
@@ -54,6 +58,8 @@ public class CertificateScoreSpecifications {
 				if(queryFastForm.getCertificateType() != null){
 					temp = PredicateUtil.add(temp, cb.equal(root.get("certificateType"), queryFastForm.getCertificateType()), cb);
 				}
+				
+				temp = PredicateUtil.add(temp, cb.equal(uploadTypeExp, 1), cb);
 				
 				return temp;
 			}
