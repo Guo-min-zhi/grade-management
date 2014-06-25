@@ -688,17 +688,16 @@ public class WorkbookService {
 					studentManager.save(student);
 				}
 				
-				CertificateScore certificateScore = certificateScoreManager.findCertificateScoreByStudentCertificateTypeAndStatus(student.getId(), certificateType.getId(), CertificateStatus.IMPORT);
-				
-				if(certificateScore == null){
-					certificateScore = new CertificateScore();
-					//设置成绩状态初始值
-					certificateScore.setGradeStatus(0);
-				}
+				CertificateScore certificateScore = null; 
 				
 				//针对四六级成绩只有一个原始成绩
 				if(importGrade.getSourceScore() != null){
 					if(row.getCell(importGrade.getSourceScore()) != null){
+						//因为同一个人的四六级成绩可以有多条记录，所以每次导入的四六级成绩都新建一条记录
+						certificateScore = new CertificateScore();
+						//设置成绩状态初始值
+						certificateScore.setGradeStatus(0);
+						
 						Expression expression = new Expression(certificateType.getFormula());
 						
 						sourceScore = row.getCell(importGrade.getSourceScore()).getNumericCellValue();
@@ -740,6 +739,14 @@ public class WorkbookService {
 						msgs.add("成功导入成绩，学号:" + studentNum + ",成绩:" + certificateScore.getSourceScore());
 					}
 				}else{
+					certificateScore = certificateScoreManager.findCertificateScoreByStudentCertificateTypeAndStatus(student.getId(), certificateType.getId(), CertificateStatus.IMPORT);
+					
+					if(certificateScore == null){
+						certificateScore = new CertificateScore();
+						//设置成绩状态初始值
+						certificateScore.setGradeStatus(0);
+					}
+					
 					boolean x1 = false;
 					boolean x2 = false;
 					boolean x3 = false;
@@ -893,9 +900,13 @@ public class WorkbookService {
 					newRow.createCell(4, HSSFCell.CELL_TYPE_STRING).setCellValue(scoreType.getCertificateName());
 				}
 				
-				if(score.getSubmitTime() != null){
+				if(score.getCertificateAcquireTime() != null){
+					newRow.createCell(5, HSSFCell.CELL_TYPE_STRING).setCellValue(CommonUtil.transferDateToString(score.getCertificateAcquireTime().getTime()));
+				}else if(score.getSubmitTime() != null){
 					newRow.createCell(5, HSSFCell.CELL_TYPE_STRING).setCellValue(CommonUtil.transferDateToString(score.getSubmitTime().getTime()));
 				}
+				
+				newRow.createCell(6, HSSFCell.CELL_TYPE_STRING).setCellValue(CommonUtil.getSemester());
 			}
 		}
 		return hssfWorkbook;

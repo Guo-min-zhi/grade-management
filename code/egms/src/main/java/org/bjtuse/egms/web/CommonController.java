@@ -38,7 +38,7 @@ public class CommonController {
 			}
 		}
 		
-		return "/error/403";
+		return "login";
 	}
 	
 	@RequestMapping(value = "/certificate", method = RequestMethod.GET)

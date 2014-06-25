@@ -2,6 +2,7 @@ package org.bjtuse.egms.util;
 
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -18,16 +19,26 @@ public class CommonUtil {
 	 * @return
 	 */
 	public static String translateToFiveLevelGrade(Float oneHundredScore){
-		if(oneHundredScore >= 85){
-			return "优";
-		}else if(oneHundredScore < 85 && oneHundredScore >=75){
-			return "良";
-		}else if(oneHundredScore < 75 && oneHundredScore >= 68){
-			return "中";
-		}else if(oneHundredScore < 68 && oneHundredScore >= 60){
-			return "及格";
+		if(oneHundredScore >= 91){
+			return "A+";
+		}else if(oneHundredScore <= 90 && oneHundredScore >= 86){
+			return "A";
+		}else if(oneHundredScore <= 85 && oneHundredScore >= 81){
+			return "B+";
+		}else if(oneHundredScore <= 80 && oneHundredScore >= 76){
+			return "B";
+		}else if(oneHundredScore <= 75 && oneHundredScore >= 71){
+			return "C+";
+		}else if(oneHundredScore <= 70 && oneHundredScore >= 66){
+			return "C";
+		}else if(oneHundredScore <= 65 && oneHundredScore >= 61){
+			return "D+";
+		}else if(oneHundredScore == 60){
+			return "D";
+		}else if(oneHundredScore == 59){
+			return "F+";
 		}else{
-			return "不及格";
+			return "F";
 		}
 	}
 	
@@ -93,11 +104,27 @@ public class CommonUtil {
 	}
 	
 	public static String transferDateToString(Long time){
-		String pattern = "yyyy-MM-dd HH:mm:ss";
+		String pattern = "yyyy-MM-dd";
 		SimpleDateFormat sdf = new SimpleDateFormat(pattern);
 		
 		Date date = new Date(time);
 		return sdf.format(date);
+	}
+	
+	public static String getSemester(){
+		StringBuffer sb = new StringBuffer();
+		
+		Calendar calendar = Calendar.getInstance();
+		int month = calendar.get(Calendar.MONTH) + 1;
+		int year = calendar.get(Calendar.YEAR);
+		
+		if(month > 7){
+			sb.append(year).append("-").append(year + 1).append("学年，第一学期");
+		}else{
+			sb.append(year - 1).append("-").append(year).append("学年，第二学期");
+		}
+		
+		return sb.toString();
 	}
 	
 	public static void main(String[] args){

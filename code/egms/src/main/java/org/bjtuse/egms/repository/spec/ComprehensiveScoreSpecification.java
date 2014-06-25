@@ -78,6 +78,9 @@ public class ComprehensiveScoreSpecification {
 					temp = PredicateUtil.add(temp, cb.lessThan(updateStampExp, end), cb);
 				}
 				
+				//只显示审核通过的证书成绩
+				Integer[] values = new Integer[]{2,6};
+				temp = PredicateUtil.add(temp, root.get("status").in(values), cb);	
 				return temp;
 			}
 		};
