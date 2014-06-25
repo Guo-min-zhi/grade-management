@@ -92,6 +92,14 @@
 							<table class="table">
 								<tbody>
 									<tr>
+										<td><strong>成绩类型:</strong></td>
+										<td>${certificate.certificateType.certificateName }</td>
+										<td><strong>综合成绩:</strong></td>
+										<td>${certificate.translatedScore }</td>
+										<td><strong>等级分:</strong></td>
+										<td>${certificate.gradeFinal }</td>
+									</tr>
+									<tr class="notCertificate">
 										<td><strong>第一学期成绩:</strong></td>
 										<td>${certificate.gradeA }</td>
 										<td><strong>第二学期成绩:</strong></td>
@@ -99,44 +107,38 @@
 										<td><strong>第三学期成绩:</strong></td>
 										<td>${certificate.gradeC }</td>
 									</tr>
-									<tr>
+									<tr class="notCertificate">
 										<td><strong>口语成绩:</strong></td>
 										<td>${certificate.oralScore }</td>
 										<td><strong>笔试成绩:</strong></td>
 										<td>${certificate.writtenScore }</td>
-										<td><strong>等级分:</strong></td>
-										<td>${certificate.gradeFinal }</td>
+										<td></td>
+										<td></td>
 									</tr>
 									
 								
-									<tr>
-										<td><strong>证书类型:</strong></td>
-										<td>${certificate.certificateType.certificateName }</td>
+									
+									<tr class="certificate">
 										<td><strong>证书成绩:</strong></td>
 										<td>${certificate.sourceScore }</td>
-										<td><strong>综合成绩:</strong></td>
-										<td>${certificate.translatedScore }</td>
-									</tr>
-									<tr>
 										<td><strong>证书获取时间:</strong></td>
 										<td>${certificate.certificateAcquireTime }</td>
-										<td><strong>证书上传时间:</strong></td>
+										<td><strong>成绩上传时间:</strong></td>
 										<td>${certificate.submitTime }</td>
-										<td><strong>证书查真网址:</strong></td>
-										<td>${certificate.checkWebsite }</td>
+										
 									</tr>
-									<tr>
+									<tr class="certificate">
 										<td><strong>审核状态</strong></td>
 										<td>${mapStatus[certificate.status] }</td>
 										<td><strong>审核次数:</strong></td>
 										<td>${certificate.verifyTimes }</td>
-										<td></td>
-										<td></td>
+										<td><strong>证书查真网址:</strong></td>
+										<td>${certificate.checkWebsite }</td>
 										<td></td>
 										<td></td>
 									</tr>
 									<c:if test="${certificate.verifyTeacherA != null }">
-										<tr>
+										<tr class="certificate">
 											<td><strong>审核人A:</strong></td>
 											<td>${certificate.verifyTeacherA.name }</td>
 											<td><strong>审核人A审核时间:</strong></td>
@@ -146,7 +148,7 @@
 										</tr>
 									</c:if>
 									<c:if test="${certificate.verifyTeacherB != null }">
-										<tr>
+										<tr class="certificate">
 											<td><strong>审核人B:</strong></td>
 											<td>${certificate.verifyTeacherB.name }</td>
 											<td><strong>审核人B审核时间:</strong></td>
@@ -156,7 +158,7 @@
 										</tr>
 									</c:if>
 
-									<tr>
+									<tr class="certificate">
 										<td><strong>证书原件照片:</strong></td>
 										<td colspan="2"><c:choose>
 												<c:when test="${certificate.cerfificatePhotoUrl != null}">
@@ -227,6 +229,13 @@
         </div>
     </div>
 	<script type="text/javascript">
+	$(document).ready(function(){
+		if('${certificate.sourceScore }' == ''){
+			$('.certificate').hide();
+		}else{
+			$('.notCertificate').hide();
+		}
+	})
 	$(function() {
 		$('#comment').validate({
 			onkeyup:true,

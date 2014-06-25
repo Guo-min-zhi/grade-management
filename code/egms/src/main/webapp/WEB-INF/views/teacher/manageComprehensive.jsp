@@ -99,10 +99,14 @@
 	                        </tr>
 	                        <script type="text/javascript">
 								$("#startTime").datetimepicker({
-									format : 'yyyy-mm-dd hh:ii:ss'
+									format : 'yyyy-mm-dd hh:00:00',
+									minView: 1,
+					    			autoclose: true
 								});
 								$("#endTime").datetimepicker({
-									format : 'yyyy-mm-dd hh:ii:ss'
+									format : 'yyyy-mm-dd hh:00:00',
+									minView: 1,
+					    			autoclose: true
 								});
 							</script>
 	                    </table>
