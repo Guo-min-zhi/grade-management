@@ -203,7 +203,8 @@
 				},
 				success: function(pass){
 		    		if(!pass){
-		    			e.preventDefault();		
+		    			e.preventDefault();
+		    			alert('删除密码错误！');
 		    		}
 				},
 				error: function(data){
@@ -238,6 +239,8 @@
 				success: function(pass){
 		    		if(pass){
 		    			location.href = "${ctx}/teacher/deleteComprehensiveExcelData?"+parameters();
+		    		}else{
+		    			alert('删除密码错误！');
 		    		}
 				},
 				error: function(data){
@@ -286,6 +289,8 @@
 		    					alert("删除出现错误！");
 		    				},
 		    			});	
+		    		}else{
+		    			alert('删除密码错误！');
 		    		}
 				},
 				error: function(data){
