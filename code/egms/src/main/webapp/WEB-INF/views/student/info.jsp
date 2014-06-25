@@ -58,7 +58,7 @@
 					<div class="form-group">
 						<label for="studentName" class="col-sm-2 control-label">姓名</label>
 						<div class="col-sm-10">
-							<input type="text" class="form-control" id="studentName" value="${student.name }"  name="studentName" maxlength="25">
+							<input type="text" class="form-control required" id="studentName" value="${student.name }"  name="studentName" maxlength="25">
 						</div>
 					</div>
 					<div class="form-group">
@@ -119,13 +119,13 @@
 					<div class="form-group">
 						<label for="studentIdentity" class="col-sm-2 control-label">身份证号</label>
 						<div class="col-sm-10">
-							<input type="text" class="form-control" id="studentIdentity" value="${student.identityNum}"  name="studentIdentity" maxlength="18">
+							<input type="text" class="form-control required" id="studentIdentity" value="${student.identityNum}"  name="studentIdentity" maxlength="18">
 						</div>
 					</div>
 					<div class="form-group">
 						<label for="studentPhone" class="col-sm-2 control-label">手机号码</label>
 						<div class="col-sm-10">
-							<input type="text" class="form-control" id="studentPhone" value="${student.phoneNum}" name="studentPhone" maxlength="11">
+							<input type="text" class="form-control required" id="studentPhone" value="${student.phoneNum}" name="studentPhone" maxlength="11">
 						</div>
 					</div>
 					<%-- <div class="form-group">

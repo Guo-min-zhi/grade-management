@@ -67,7 +67,7 @@
 		                                	<tr>
 		                                		<td>0</td>
 		                                		<td>学号(*)</td>
-		                                		<td><input type="text" name="studentNum"></td>
+		                                		<td><input type="text" name="studentNum" class="required"></td>
 		                                	</tr>
 		                                	<tr>
 		                                		<td>1</td>
