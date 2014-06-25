@@ -50,7 +50,7 @@
 								</div>
 								<div class="form-group">
 									<form:select path="roleName" cssClass="form-control required">
-										<form:option value="">--请选择角色类型--</form:option>
+										<form:option value="">--请选择用户类型--</form:option>
 										<form:options items="${allRoleType }" itemLabel="roleName"
 											itemValue="roleCode" />
 									</form:select>
