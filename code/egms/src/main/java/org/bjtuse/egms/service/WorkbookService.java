@@ -856,13 +856,13 @@ public class WorkbookService {
 		
 		HSSFRow firstRow = hssfSheet.createRow(0);
 		
-		firstRow.createCell(0, HSSFCell.CELL_TYPE_STRING).setCellValue("序号");
-		firstRow.createCell(1, HSSFCell.CELL_TYPE_STRING).setCellValue("学号");
-		firstRow.createCell(2, HSSFCell.CELL_TYPE_STRING).setCellValue("姓名");
-		firstRow.createCell(3, HSSFCell.CELL_TYPE_STRING).setCellValue("综合成绩");
-		firstRow.createCell(4, HSSFCell.CELL_TYPE_STRING).setCellValue("等级分");
-		firstRow.createCell(5, HSSFCell.CELL_TYPE_STRING).setCellValue("来源");
-		firstRow.createCell(6, HSSFCell.CELL_TYPE_STRING).setCellValue("认定日期");
+		firstRow.createCell(0, HSSFCell.CELL_TYPE_STRING).setCellValue("学号");
+		firstRow.createCell(1, HSSFCell.CELL_TYPE_STRING).setCellValue("姓名");
+		firstRow.createCell(2, HSSFCell.CELL_TYPE_STRING).setCellValue("综合成绩");
+		firstRow.createCell(3, HSSFCell.CELL_TYPE_STRING).setCellValue("等级分");
+		firstRow.createCell(4, HSSFCell.CELL_TYPE_STRING).setCellValue("来源");
+		firstRow.createCell(5, HSSFCell.CELL_TYPE_STRING).setCellValue("认定日期");
+		firstRow.createCell(6, HSSFCell.CELL_TYPE_STRING).setCellValue("学年学期");
 		
 		if(scoreList != null && scoreList.size() > 0){
 			log.info("generateCmprehensiveScoreWorkbook-------scoreList.size:{}", scoreList.size());
@@ -872,30 +872,29 @@ public class WorkbookService {
 				CertificateType scoreType = score.getCertificateType();
 				
 				// 更改score的状态：2-可以计算综合成绩，已导出
-				if(score.getGradeStatus() != 0){
+				if(score.getGradeStatus() == null || score.getGradeStatus() != 0){
 					score.setGradeStatus(2);
 					certificateScoreManager.saveCertificateSocre(score);					
 				}
 				
 				HSSFRow newRow = hssfSheet.createRow(i + 1);
-				newRow.createCell(0, HSSFCell.CELL_TYPE_STRING).setCellValue("" + (i + 1));
-				newRow.createCell(1, HSSFCell.CELL_TYPE_STRING).setCellValue(student.getLoginName());
+				newRow.createCell(0, HSSFCell.CELL_TYPE_STRING).setCellValue(student.getLoginName());
 				
 				if(student.getName() != null){
-					newRow.createCell(2, HSSFCell.CELL_TYPE_STRING).setCellValue(student.getName());
+					newRow.createCell(1, HSSFCell.CELL_TYPE_STRING).setCellValue(student.getName());
 				}
 				if(score.getTranslatedScore() != null){
-					newRow.createCell(3, HSSFCell.CELL_TYPE_NUMERIC).setCellValue(score.getTranslatedScore());
+					newRow.createCell(2, HSSFCell.CELL_TYPE_NUMERIC).setCellValue(score.getTranslatedScore());
 				}
 				if(score.getGradeFinal() != null){
-					newRow.createCell(4, HSSFCell.CELL_TYPE_STRING).setCellValue(score.getGradeFinal());
+					newRow.createCell(3, HSSFCell.CELL_TYPE_STRING).setCellValue(score.getGradeFinal());
 				}
 				if(scoreType != null && scoreType.getCertificateName() != null){
-					newRow.createCell(5, HSSFCell.CELL_TYPE_STRING).setCellValue(scoreType.getCertificateName());
+					newRow.createCell(4, HSSFCell.CELL_TYPE_STRING).setCellValue(scoreType.getCertificateName());
 				}
 				
 				if(score.getSubmitTime() != null){
-					newRow.createCell(6, HSSFCell.CELL_TYPE_STRING).setCellValue(CommonUtil.transferDateToString(score.getSubmitTime().getTime()));
+					newRow.createCell(5, HSSFCell.CELL_TYPE_STRING).setCellValue(CommonUtil.transferDateToString(score.getSubmitTime().getTime()));
 				}
 			}
 		}

@@ -119,6 +119,11 @@
 	                        	<button type="button" class="btn btn-primary btn-xs" id="exportComBtn">
 									<span class="glyphicon glyphicon-export"></span>&nbsp;导出成绩信息
 								</button>
+								
+								<button type="button" class="btn btn-primary btn-xs" id="deleteComBtn">
+									<span class="glyphicon glyphicon-export"></span>&nbsp;删除当前查询结果
+								</button>
+								
 							<!-- </form> -->
                         </div>
                         <table class="table table-bordered" style="font-size:12px;">
@@ -199,6 +204,10 @@
 		}
 		$("#exportComBtn").click(function(){
 			location.href = "${ctx }/teacher/exportComprehensiveExcel?"+parameters();
+		});
+		
+		$("#deleteComBtn").click(function(){
+			location.href = "${ctx}/teacher/deleteComprehensiveExcelData?"+parameters();
 		});
 	});
 	</script>

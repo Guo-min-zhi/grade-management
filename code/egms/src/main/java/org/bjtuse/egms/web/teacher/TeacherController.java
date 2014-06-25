@@ -725,4 +725,26 @@ public class TeacherController {
 		
 		return "teacher/scoreInfo";
 	}
+	
+	@RequestMapping(value = "/deleteComprehensiveExcelData", method = RequestMethod.GET)
+	public String deleteComprehensiveData(Model model,
+			HttpServletRequest request, HttpServletResponse response,
+			String studentNumber, String studentName,
+			String startTime, String endTime,
+			Integer certificateType, Integer scoreStatus) {
+
+		QueryComprehensiveForm queryComprehensiveForm = new QueryComprehensiveForm();
+		queryComprehensiveForm.setStudentNumber(studentNumber);
+		queryComprehensiveForm.setStudentName(studentName);
+		queryComprehensiveForm.setStartTime(startTime);
+		queryComprehensiveForm.setEndTime(endTime);
+		queryComprehensiveForm.setCertificateType(certificateType);
+		queryComprehensiveForm.setScoreStatus(scoreStatus);
+		
+		List<CertificateScore> findScoreList = certificateScoreManager.findComprehensiveScoreToExport(queryComprehensiveForm);
+			
+		log.info("Delete certificateScore size = [{}]", findScoreList.size());
+		certificateScoreManager.deletePatchCertificateScore(findScoreList);
+		return "redirect:/teacher/manage";
+	}
 }

@@ -216,8 +216,7 @@
 										<tr id="${certificate.id }">
 											<td><input type="checkbox" class="checkTr"
 												value="${certificate.id }"></td>
-											<td><c:out
-													value="${certificate.certificateType.certificateName }"></c:out></td>
+											<td><c:out value="${certificate.certificateType.certificateName }"></c:out></td>
 											<td><c:out value="${certificate.studentInfo.name }"></c:out></td>
 											<td><c:out value="${certificate.sourceScore}"></c:out></td>
 											<td><c:out value="${certificate.translatedScore}"></c:out></td>
