@@ -9,7 +9,7 @@
 			<span class="sr-only">Toggle navigation</span> <span class="icon-bar"></span>
 			<span class="icon-bar"></span> <span class="icon-bar"></span>
 		</button>
-		<a class="navbar-brand" href="index.html">英语成绩管理系统</a>
+		<a class="navbar-brand" href="index.html">英语综合成绩管理系统</a>
 	</div>
 	<!-- /.navbar-header -->
 

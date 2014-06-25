@@ -32,7 +32,7 @@ public class CommonController {
 			if(role.equals("admin")){
 				return "redirect:/admin/studentManage/list";
 			}else if(role.equals("teacher")){
-				return "redirect:/teacher/management";
+				return "redirect:/teacher/welcome";
 			}else if(role.equals("student")){
 				return "redirect:/student/info";
 			}

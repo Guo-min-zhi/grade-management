@@ -26,7 +26,7 @@
 	</div> --%>
 	<div class="bs-header" id="content">
 		<div class="container">
-			<h1>英语水平考试证书认定系统</h1>
+			<h1>英语综合成绩管理系统</h1>
 		</div>
 	</div>
 	<div class="container">
@@ -37,7 +37,7 @@
             <div class="col-md-4">
                 <div class="panel panel-primary">
                     <div class="panel-heading">
-                        <h3 class="panel-title">英语水平考试证书认定系统</h3>
+                        <h3 class="panel-title">英语综合成绩管理系统</h3>
                     </div>
                     <div class="panel-body">
 						<form:form id="loginForm" action="${ctx}/login" method="post" modelAttribute="loginForm" role="form">

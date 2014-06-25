@@ -88,7 +88,7 @@ public class StudentRouterController {
 		studentManager.save(student);
 		model.addAttribute("student", student);
 		model.addAttribute("result", "success");
-		return "student/studentInfo";
+		return "student/info";
 	}
 
 	/**

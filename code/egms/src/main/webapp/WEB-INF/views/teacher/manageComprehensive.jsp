@@ -121,7 +121,11 @@
 								</button>
 								
 								<button type="button" class="btn btn-primary btn-xs" id="deleteComBtn">
-									<span class="glyphicon glyphicon-export"></span>&nbsp;删除当前查询结果
+									<span class="glyphicon glyphicon-remove"></span>&nbsp;删除当前查询结果
+								</button>
+								
+								<button type="button" class="btn btn-warning btn-xs" id="deletePatchBtn">
+									<span class="glyphicon glyphicon-remove"></span>&nbsp;批量删除
 								</button>
 								
 							<!-- </form> -->
@@ -129,6 +133,7 @@
                         <table class="table table-bordered" style="font-size:12px;">
                             <thead>
                                 <tr class="success">
+                                	<th style=" width: 20px; "><input type="checkbox" id="chooseAll" /></th>
                                     <th style=" width: 20px; "></th>
                                     <th>学号</th>
                                     <th>姓名</th>
@@ -142,6 +147,7 @@
                             <tbody>
                             	<c:forEach items="${pageObjects.content}" var="certificate" varStatus="status">
 	                                <tr id="${certificate.id }">
+	                                	<td><input type="checkbox" class="checkTr" value="${certificate.id }"></td>
 	                                    <td><c:out value="${status.count }"/></td>
 	                                    <td><c:out value="${certificate.studentInfo.loginName }"></c:out></td>
 	                                    <td><c:out value="${certificate.studentInfo.name }"></c:out></td>
@@ -208,6 +214,37 @@
 		
 		$("#deleteComBtn").click(function(){
 			location.href = "${ctx}/teacher/deleteComprehensiveExcelData?"+parameters();
+		});
+		
+		//负责checkbox的全选和全不选
+    	$("#chooseAll").change(function(){
+			if($("#chooseAll")[0].checked){
+				$("input[type='checkbox']").prop("checked", true);
+			}else{
+				$("input[type='checkbox']").prop("checked", false);
+			}
+		});
+    	//点击“批量删除”按钮发生的事件
+		$("#deletePatchBtn").click(function(){
+			var certificates = new Array();
+    		$.each($(".checkTr"), function(i, o){
+    			if(o.checked){
+	    			certificates.push($(o).prop("value"));
+    			}
+    		});
+    		$.ajax({
+				type: "post",
+				url: "${ctx}/teacher/delete",
+				data: {
+					certificates : certificates.join(",")
+				},
+				success: function(data){
+		    		window.location.reload();
+				},
+				error: function(data){
+					alert("删除出现错误！");
+				},
+			});
 		});
 	});
 	</script>

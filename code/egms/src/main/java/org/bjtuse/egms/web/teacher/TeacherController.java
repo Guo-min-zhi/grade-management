@@ -726,6 +726,19 @@ public class TeacherController {
 		return "teacher/scoreInfo";
 	}
 	
+	/**
+	 * 删除查询结果
+	 * @param model
+	 * @param request
+	 * @param response
+	 * @param studentNumber
+	 * @param studentName
+	 * @param startTime
+	 * @param endTime
+	 * @param certificateType
+	 * @param scoreStatus
+	 * @return
+	 */
 	@RequestMapping(value = "/deleteComprehensiveExcelData", method = RequestMethod.GET)
 	public String deleteComprehensiveData(Model model,
 			HttpServletRequest request, HttpServletResponse response,
@@ -746,5 +759,14 @@ public class TeacherController {
 		log.info("Delete certificateScore size = [{}]", findScoreList.size());
 		certificateScoreManager.deletePatchCertificateScore(findScoreList);
 		return "redirect:/teacher/manage";
+	}
+	
+	/**
+	 * 跳转到老师欢迎页面
+	 * @return
+	 */
+	@RequestMapping(value = "/welcome", method = RequestMethod.GET)
+	public String welcome() {
+		return "teacher/welcome";
 	}
 }
