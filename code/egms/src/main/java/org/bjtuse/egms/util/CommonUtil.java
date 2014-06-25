@@ -14,7 +14,7 @@ import org.bjtuse.egms.repository.entity.CertificateScore;
 public class CommonUtil {
 	
 	/**
-	 * 将百分制转换为五级制
+	 * 将百分制转换为五级十段制
 	 * @param oneHundredScore
 	 * @return
 	 */
