@@ -10,6 +10,7 @@ import java.util.Map;
 import net.java.dev.eval.Expression;
 
 import org.bjtuse.egms.repository.entity.CertificateScore;
+import org.bjtuse.egms.repository.entity.CertificateType;
 
 public class CommonUtil {
 	
@@ -122,6 +123,32 @@ public class CommonUtil {
 			sb.append(year).append("-").append(year + 1).append("学年，第一学期");
 		}else{
 			sb.append(year - 1).append("-").append(year).append("学年，第二学期");
+		}
+		
+		return sb.toString();
+	}
+	
+	public static String generateHintsByCertificateType(CertificateType certificateType){
+		StringBuffer sb = new StringBuffer("当前上传的是【").append(certificateType.getCertificateName()).append("】,需要匹配的字段包含：");
+		
+		String formula = certificateType.getFormula();
+		if(formula.contains("x1")){
+			sb.append("【第一学期成绩】");
+		}else{
+			sb.append("【四六级考试成绩】");
+		}
+		
+		if(formula.contains("x2")){
+			sb.append("【第二学期成绩】");
+		}
+		if(formula.contains("x3")){
+			sb.append("【第三学期成绩】");
+		}
+		if(formula.contains("x4")){
+			sb.append("【口语成绩】");
+		}
+		if(formula.contains("x5")){
+			sb.append("【笔试成绩】");
 		}
 		
 		return sb.toString();

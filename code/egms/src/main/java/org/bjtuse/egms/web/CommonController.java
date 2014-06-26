@@ -38,7 +38,7 @@ public class CommonController {
 			}
 		}
 		
-		return "login";
+		return "redirect:/login";
 	}
 	
 	@RequestMapping(value = "/certificate", method = RequestMethod.GET)
@@ -66,5 +66,20 @@ public class CommonController {
 	@RequestMapping(value = "/", method = RequestMethod.GET)
 	public String home(){
 		return "redirect:/login";
+	}
+	
+	@RequestMapping("/certificate-check")
+	public String certificateCheck(){
+		return "redirect:/index";
+	}
+	
+	@RequestMapping("/certificate-photos")
+	public String certificatePhotos(){
+		return "redirect:/index";
+	}
+	
+	@RequestMapping("/student-photos")
+	public String studentPhotos(){
+		return "redirect:/index";
 	}
 }

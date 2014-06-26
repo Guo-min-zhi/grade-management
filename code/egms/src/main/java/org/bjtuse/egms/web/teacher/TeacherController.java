@@ -501,6 +501,7 @@ public class TeacherController {
 		try{
 			if(!file.isEmpty()){
 				String ct = request.getParameter("ct");
+				CertificateType certificateType = certificateTypeManager.getCertificateById(Integer.parseInt(ct));
 				String loginName = request.getSession().getAttribute("loginName").toString();
 				String ctxPath = request.getSession().getServletContext().getRealPath("/")
 						+ File.separatorChar + "temp" + File.separator + loginName;
@@ -534,6 +535,7 @@ public class TeacherController {
 				
 				model.addAttribute("tempFile", newFileName);
 				model.addAttribute("fields", fieldNames);
+				model.addAttribute("hints", CommonUtil.generateHintsByCertificateType(certificateType));
 				model.addAttribute("ct", ct);
 			}
 		}catch(Exception e){
