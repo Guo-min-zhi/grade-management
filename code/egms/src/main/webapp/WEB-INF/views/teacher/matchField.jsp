@@ -33,7 +33,7 @@
             <div class="row">
                 <div class="col-lg-12">
                     <div class="panel panel-info">
-                        <div class="panel-heading">字段匹配</div>
+                        <div class="panel-heading"><c:out value="${hints }"></c:out></div>
                         <div class="panel-body">
                         	<div class="col-sm-3">
                         		<table class="table table-bordered">

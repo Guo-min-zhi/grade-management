@@ -9,7 +9,7 @@
 			<span class="sr-only">Toggle navigation</span> <span class="icon-bar"></span>
 			<span class="icon-bar"></span> <span class="icon-bar"></span>
 		</button>
-		<a class="navbar-brand" href="index.html">英语综合成绩管理系统</a>
+		<a class="navbar-brand" href="${ctx }/index">英语综合成绩管理系统</a>
 	</div>
 	<!-- /.navbar-header -->
 
@@ -22,7 +22,7 @@
 		</a>
 			<ul class="dropdown-menu dropdown-user">
 				<li><a href="${ctx }/logout"><i class="fa fa-sign-out fa-fw"></i>
-						登出</a></li>
+						退出</a></li>
 			</ul> <!-- /.dropdown-user --></li>
 		<!-- /.dropdown -->
 	</ul>
