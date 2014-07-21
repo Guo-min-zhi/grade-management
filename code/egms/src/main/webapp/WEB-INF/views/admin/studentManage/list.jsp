@@ -38,6 +38,9 @@
 							<button type="submit" class="btn btn-primary btn-xs">
 								<span class="glyphicon glyphicon-export"></span>&nbsp;导出学生信息
 							</button>
+							<button type="button" class="btn btn-primary btn-xs" id="deletePatchBtn">
+								<span class="glyphicon glyphicon-remove"></span>&nbsp;批量删除
+							</button>
 						</form>
                     </h2>
                 </div>
@@ -104,6 +107,7 @@
                             <table class="table table-bordered">
                                 <thead>
                                     <tr class="success">
+                                    	<th style=" width: 20px; "><input type="checkbox" id="chooseAll" /></th>
                                         <td>&nbsp;</td>
                                         <td>学号</td>
                                         <td>姓名</td>
@@ -115,6 +119,7 @@
                                 <tbody>
                                     <c:forEach items="${pageObjects.content}" var="student"	varStatus="status">
 										<tr id="row${status.count }">
+											<td><input type="checkbox" class="checkTr" value="${student.id }"></td>
 											<td><c:out value="${status.count }"/></td>
 											<td><c:out value="${student.loginName }" /></td>
 											<td><c:out value="${student.name }" /></td>
@@ -167,8 +172,60 @@
 	   				});
 	   			}
 	   		});
-	   		
 	   	});
+		
+		$(function(){
+			//负责checkbox的全选和全不选
+	    	$("#chooseAll").change(function(){
+				if($("#chooseAll")[0].checked){
+					$("input[type='checkbox']").prop("checked", true);
+				}else{
+					$("input[type='checkbox']").prop("checked", false);
+				}
+			});
+	    	//点击“批量删除”按钮发生的事件
+			$("#deletePatchBtn").click(function(){
+				var students = new Array();
+	    		$.each($(".checkTr"), function(i, o){
+	    			if(o.checked){
+	    				students.push($(o).prop("value"));
+	    			}
+	    		});
+	    		var password = prompt("删除需要管理员密码 ");
+	    		$.ajax({
+					async: false,
+					type: "POST",
+					url: "${ctx}/teacher/validateP",
+					data: {
+						password: password
+					},
+					success: function(pass){
+			    		if(pass){
+			    			$.ajax({
+			    				type: "post",
+			    				url: "${ctx}/admin/studentManage/delete",
+			    				data: {
+			    					students: students.join(",")
+			    				},
+			    				success: function(data){
+			    		    		window.location.reload();
+			    				},
+			    				error: function(data){
+			    					alert("删除出现错误！");
+			    				},
+			    			});	
+			    		}else{
+			    			if(password != null){
+				    			alert('删除密码错误！');
+			    			}
+			    		}
+					},
+					error: function(data){
+						alert("删除出现错误！");
+					},
+				});
+			});
+		});
 	</script>
 </body>
 </html>

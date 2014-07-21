@@ -14,16 +14,17 @@
 	<!-- /.navbar-header -->
 
 	<ul class="nav navbar-top-links navbar-right">
-
+		<li><a href="${ctx }/logout"><i class="fa fa-sign-out fa-fw"></i> 退出</a></li>
 		<!-- /.dropdown -->
-		<li class="dropdown"><a class="dropdown-toggle"
-			data-toggle="dropdown" href="#"> <i class="fa fa-user fa-fw"></i>
+		<%-- <li class="dropdown">
+			<a class="dropdown-toggle" data-toggle="dropdown" href="#"> 
+				<i class="fa fa-user fa-fw"></i>
 				<i class="fa fa-caret-down"></i>
-		</a>
+			</a>
 			<ul class="dropdown-menu dropdown-user">
-				<li><a href="${ctx }/logout"><i class="fa fa-sign-out fa-fw"></i>
-						退出</a></li>
-			</ul> <!-- /.dropdown-user --></li>
+				<li><a href="${ctx }/logout"><i class="fa fa-sign-out fa-fw"></i> 退出</a></li>
+			</ul> 
+		</li> --%>
 		<!-- /.dropdown -->
 	</ul>
 	<!-- /.navbar-top-links -->

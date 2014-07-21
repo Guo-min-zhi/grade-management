@@ -11,3 +11,5 @@
 <link type="text/css" rel="stylesheet" href="${staticFile}/css/signin.css" />
 <link type="text/css" rel="stylesheet" href="${staticFile}/css/sticky-footer.css" />
 <link type="text/css" rel="stylesheet" href="${staticFile}/css/jquery.placeholder.css" />
+
+<link type="text/css" rel="stylesheet" href="${staticFile}/css/bootstrap-ie7.css" />
