@@ -1,5 +1,6 @@
 package org.bjtuse.egms.service;
 
+import java.util.Iterator;
 import java.util.List;
 
 import org.bjtuse.egms.repository.dao.StudentDao;
@@ -14,6 +15,10 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 
+/**
+ * @author Administrator
+ *
+ */
 @Component
 @Transactional(readOnly = true)
 public class StudentManager {
@@ -46,9 +51,25 @@ public class StudentManager {
 		return studentDao.findAll();
 	}
 	
+	public List<Student> findSatisfiedStudent(){
+		return studentDao.findStudentByStatus(1);
+	}
+	
 	@Transactional(readOnly = false)
 	public void disableStudent(Long id){
 		studentDao.disableStudent(id);
+	}
+	
+	/**
+	 * 删除学生并没有真正的删除，而是更改了标志位
+	 * @param entities
+	 */
+	@Transactional(readOnly=false)
+	public void deletePatchStudent(List<Student> entities){
+		Iterator<Student> iterator = entities.iterator();
+		while(iterator.hasNext()){
+			disableStudent(iterator.next().getId());
+		}
 	}
 	
 //	public Page<Student> getStuPaged(CertificateFastQueryForm queryFastForm, Pageable pageable){

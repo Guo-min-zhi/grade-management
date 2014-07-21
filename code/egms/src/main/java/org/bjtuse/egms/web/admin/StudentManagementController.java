@@ -1,6 +1,10 @@
 package org.bjtuse.egms.web.admin;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -163,7 +167,7 @@ public class StudentManagementController {
 
 		Map<String, Object> obj = null;
 		HSSFWorkbook hssfWorkbook = workbookService
-				.generateStudentInfoWorkbook(studentManager.findAll());
+				.generateStudentInfoWorkbook(studentManager.findSatisfiedStudent());
 		try {
 			viewExcel.buildExcelDocument(obj, hssfWorkbook, request, response);
 		} catch (Exception e) {
@@ -180,5 +184,24 @@ public class StudentManagementController {
 		log.info("[{}] delete student whose id is :{}",
 				request.getAttribute("loginName"), id);
 		return "redirect:/admin/studentManage/list";
+	}
+	
+	@RequestMapping(value = "/delete", method = RequestMethod.POST)
+	@ResponseBody
+	public String deleteStudents(String students, HttpServletRequest request) {
+		String[] strs = students.split(",");
+		Iterator<String> iterator = Arrays.asList(strs).iterator();
+		List<Student> lists = new ArrayList<Student>();
+		while (iterator.hasNext()) {
+			Long sid = Long.parseLong(iterator.next());
+			Student student = studentManager.findStudentById(sid);
+			lists.add(student);
+			log.info(
+					"Operator:{}, Result: DELETE, Target:[studentId:{}, studentName:{}]",
+					request.getSession().getAttribute("loginName"),
+					student.getId(), student.getName());
+		}
+		studentManager.deletePatchStudent(lists);
+		return "success";
 	}
 }

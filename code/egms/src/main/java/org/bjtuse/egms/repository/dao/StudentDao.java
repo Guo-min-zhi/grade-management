@@ -1,5 +1,7 @@
 package org.bjtuse.egms.repository.dao;
 
+import java.util.List;
+
 import org.bjtuse.egms.repository.entity.Student;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
@@ -17,4 +19,7 @@ public interface StudentDao extends JpaRepository<Student, Long>,
 	void disableStudent(@Param("id")Long id);
 	
 	Student findStudentByLoginNameAndStatus(String loginName, Integer status);
+	
+	
+	List<Student> findStudentByStatus(Integer status);
 }
