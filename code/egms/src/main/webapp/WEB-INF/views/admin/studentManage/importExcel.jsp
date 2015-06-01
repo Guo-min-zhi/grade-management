@@ -10,6 +10,7 @@
 
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="REFRESH" content="900;url=TimeOut?OpenForm">
 
     <title>英语成绩管理系统</title>
     <%@ include file="/WEB-INF/views/common/styles.jsp"%>
@@ -18,7 +19,14 @@
 </head>
 
 <body>
-
+	<div id="mymodal" class="mymodal">
+		<div class="modalcontent">
+			<div style="float: left; padding-right: 20px;">
+				<img src="${ctx}/static/img/loading.gif">
+			</div>
+			<div id="modallabel" style="line-height: 32px"></div>
+		</div>
+	</div>
     <div id="wrapper">
 		<%@ include file="/WEB-INF/views/component/header.jsp" %>
 		<%@ include file="../component/sidebar.jsp" %>
@@ -54,7 +62,7 @@
                                 </div>
                                 <div class="form-group">
                                      <div class="col-sm-3 col-sm-offset-2">
-                                         <button type="submit" class="btn btn-primary">
+                                         <button class="btn btn-primary" id="submitButton">
                                          	<span class="glyphicon glyphicon-import"></span>&nbsp;导入
                                          </button>
                                      </div>
@@ -87,10 +95,21 @@
             </div>
         </div>
     </div>
+    
+	<div id="myback" class="myback"></div>
     <script type="text/javascript">
     	$('#file').change(function(){
     		$('#filename').val($('#file')[0].files[0].name)
     	});
+    	
+    	$('#submitButton').click(function(){
+    		$('form')[0].submit();
+    		$('#modallabel').html('正在导入学生信息，请耐心等待...');
+    		$('#myback').css({
+    			display : 'block'
+    		});
+    		$('#mymodal').slideToggle('normal');
+    	})
     </script>
 </body>
 </html>

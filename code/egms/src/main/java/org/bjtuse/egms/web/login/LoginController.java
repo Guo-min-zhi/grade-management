@@ -54,7 +54,8 @@ public class LoginController {
 			user.login(token);
 			request.getSession().setAttribute("loginName", loginForm.getLoginName());
 			request.getSession().setAttribute("role", loginForm.getRoleName());
-			log.info("{} login successfully. RoleType:{}", loginForm.getLoginName(), loginForm.getRoleName());
+			String loginIp = getIpAddr(request);
+			log.info("{} login successfully. RoleType:{}. Login Ip Addr: {}.", loginForm.getLoginName(), loginForm.getRoleName(), loginIp);
 			return "redirect:/index";
 		}catch (AuthenticationException e) {
 			token.clear();
@@ -63,5 +64,19 @@ public class LoginController {
 			request.setAttribute("loginFailure", "用户名或密码错误，登录失败。");
 			return "login";
 		}
+	}
+	
+	private String getIpAddr(HttpServletRequest request) {
+		String ip = request.getHeader("x-forwarded-for");       
+		if(ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {       
+			ip = request.getHeader("Proxy-Client-IP");
+		}
+	    if(ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {       
+	    	ip = request.getHeader("WL-Proxy-Client-IP");
+	    }
+	    if(ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {       
+	    	ip = request.getRemoteAddr();
+	    }
+	    return ip;       
 	}
 }

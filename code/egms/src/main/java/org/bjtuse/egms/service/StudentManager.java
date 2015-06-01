@@ -39,6 +39,10 @@ public class StudentManager {
 		studentDao.save(student);
 	}
 	
+	public void save(List<Student> studentList){
+		studentDao.save(studentList);
+	}
+	
 	public Page<Student> getPaged(StudentInfoQueryForm queryForm, Pageable pageable){
 		return studentDao.findAll(Specifications.where(StudentInfoSpecifications.studentInfoSpec(queryForm)), pageable);
 	}

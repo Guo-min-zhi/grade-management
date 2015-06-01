@@ -91,13 +91,22 @@ public class StudentManagementController {
 	@RequestMapping(value = "save")
 	public void save(@ModelAttribute("student") Student student){
 		if(student.getId() == null){
+			//新增
+			//如果新增的是之前经过删除操作的学生，则进行相应的处理，以免在数据库中有两条记录的学号是相同的
+			Student deletedStudent = studentManager.findUserByLoginName(student.getLoginName());
+			if(deletedStudent != null){
+				student.setId(deletedStudent.getId());
+			}
+			
 			String defaultPassword = ProjectProperties
 					.getProperty("defaultPassword");
 			
 			student.setPassword(new Md5Hash(defaultPassword).toHex());
 			student.setStatus(1);
 			student.setRole(roleTypeManager.getRoleTypeByCode("student"));
+			
 		}
+		
 		
 		studentManager.save(student);
 	}
@@ -182,7 +191,7 @@ public class StudentManagementController {
 		studentManager.disableStudent(id);
 
 		log.info("[{}] delete student whose id is :{}",
-				request.getAttribute("loginName"), id);
+				request.getSession().getAttribute("loginName"), id);
 		return "redirect:/admin/studentManage/list";
 	}
 	

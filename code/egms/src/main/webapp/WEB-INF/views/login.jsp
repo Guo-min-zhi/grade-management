@@ -37,7 +37,7 @@
             <div class="col-md-4">
                 <div class="panel panel-primary">
                     <div class="panel-heading">
-                        <h3 class="panel-title">英语综合成绩管理系统</h3>
+                        <h3 class="panel-title">英语综合成绩管理系统<a href="${staticFile}/综合能力成绩平台的使用说明.pdf" style="float: right;text-decoration: underline;color: red;" target="_blank">使用说明</a></h3>
                     </div>
                     <div class="panel-body">
 						<form:form id="loginForm" action="${ctx}/login" method="post" modelAttribute="loginForm" role="form">

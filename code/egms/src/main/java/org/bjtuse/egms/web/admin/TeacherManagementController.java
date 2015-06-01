@@ -86,8 +86,15 @@ public class TeacherManagementController {
 	@RequestMapping(value = "save")
 	public void save(@ModelAttribute("teacher") Teacher teacher){
 		if(teacher.getId() == null){
+			//新增
 			String defaultPassword = ProjectProperties
 					.getProperty("defaultPassword");
+			
+			//如果新增的是之前经过删除操作的老师，则进行相应的处理，以免在数据库中有两条记录的登陆名是相同的
+			Teacher deletedTeacher = teacherManager.findTeacherByLoginName(teacher.getLoginName());
+			if(deletedTeacher != null){
+				teacher.setId(deletedTeacher.getId());
+			}
 			
 			teacher.setPassword(new Md5Hash(defaultPassword).toHex());
 			teacher.setStatus(1);

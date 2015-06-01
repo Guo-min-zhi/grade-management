@@ -83,6 +83,7 @@ public class WorkbookService {
 		
 		RoleType roleType = roleTypeManager.getRoleTypeByCode("student");
 		
+		List<Student> studentList = new ArrayList<Student>();
 		int rowSize = sheet.getLastRowNum();
 		//第一行是标题，从第二行开始
 		for(int i = 1; i <= rowSize; i++){
@@ -157,31 +158,36 @@ public class WorkbookService {
 				}
 				
 				student.setStatus(1);
-				student.setName(name.trim());
-				if("男".equals(gender.trim())){
+				student.setName(name);
+				if("男".equals(gender)){
 					student.setGender(1);
 				}else{
 					student.setGender(0);
 				}
-				student.setIdentityNum(identityNum.trim());
-				student.setPhoneNum(phoneNum.trim());
-				student.setCollege(college.trim());
-				student.setMajor(major.trim());
-				student.setGrade(grade.trim());
-				student.setClassNum(classNum.trim());
+				student.setIdentityNum(identityNum);
+				student.setPhoneNum(phoneNum);
+				student.setCollege(college);
+				student.setMajor(major);
+				student.setGrade(grade);
+				student.setClassNum(classNum);
 				student.setRole(roleType);
 				
 				if(student.getId() == null){
 					msgs.add("导入学生信息成功，学号:" + studentNum);
-					log.info("Import Stucent Account Info Successfully, studentNum:{}", studentNum);
+					log.info("Import Student Account Info Successfully, studentNum:{}", studentNum);
 				}else{
 					msgs.add("学号:" + studentNum + "已存在");
 					log.info("Update Student Account Info Successfully, studentNum:{}", studentNum);
 				}
 				
 				successCount++;
-				studentManager.save(student);
+				studentList.add(student);
+//				studentManager.save(student);
 			}
+		}
+		
+		if(studentList.size() > 0){
+			studentManager.save(studentList);
 		}
 		
 		importResult.setSuccessCount(successCount);
@@ -259,7 +265,7 @@ public class WorkbookService {
 			
 			Cell cell10 = row.getCell(10);
 			if(cell10 != null){
-				score = cell10.getNumericCellValue();
+				score = getScoreFromCell(cell10, null);
 			}
 			
 			Cell cell15 = row.getCell(15);
@@ -700,7 +706,7 @@ public class WorkbookService {
 						
 						Expression expression = new Expression(certificateType.getFormula());
 						
-						sourceScore = row.getCell(importGrade.getSourceScore()).getNumericCellValue();
+						sourceScore = getScoreFromCell(row.getCell(importGrade.getSourceScore()), msgs);
 						
 						Map<String, BigDecimal> variables = new HashMap<String, BigDecimal>();
 						variables.put("x", new BigDecimal(sourceScore));
@@ -773,27 +779,27 @@ public class WorkbookService {
 					}
 					
 					if(importGrade.getGradeA() != null && row.getCell(importGrade.getGradeA()) != null){
-						gradeA = row.getCell(importGrade.getGradeA()).getNumericCellValue();
+						gradeA = getScoreFromCell(row.getCell(importGrade.getGradeA()), msgs);
 						certificateScore.setGradeA(gradeA.floatValue());
 						sb.append(",第一学期成绩:").append(certificateScore.getGradeA());
 					}
 					if(importGrade.getGradeB() != null && row.getCell(importGrade.getGradeB()) != null){
-						gradeB = row.getCell(importGrade.getGradeB()).getNumericCellValue();
+						gradeB = getScoreFromCell(row.getCell(importGrade.getGradeB()), msgs);
 						certificateScore.setGradeB(gradeB.floatValue());
 						sb.append(",第二学期成绩:").append(certificateScore.getGradeB());
 					}
 					if(importGrade.getGradeC() != null && row.getCell(importGrade.getGradeC()) != null){
-						gradeC = row.getCell(importGrade.getGradeC()).getNumericCellValue();
+						gradeC = getScoreFromCell(row.getCell(importGrade.getGradeC()), msgs);
 						certificateScore.setGradeC(gradeC.floatValue());
 						sb.append(",第三学期成绩:").append(certificateScore.getGradeC());
 					}
 					if(importGrade.getOralScore() != null && row.getCell(importGrade.getOralScore()) != null){
-						oralScore = row.getCell(importGrade.getOralScore()).getNumericCellValue();
+						oralScore = getScoreFromCell(row.getCell(importGrade.getOralScore()), msgs);
 						certificateScore.setOralScore(oralScore.floatValue());
 						sb.append(",口语成绩:").append(certificateScore.getOralScore());
 					}
 					if(importGrade.getWrittenScore() != null && row.getCell(importGrade.getWrittenScore()) != null){
-						writtenScore = row.getCell(importGrade.getWrittenScore()).getNumericCellValue();
+						writtenScore = getScoreFromCell(row.getCell(importGrade.getWrittenScore()), msgs);
 						certificateScore.setWrittenScore(writtenScore.floatValue());
 						sb.append(",笔试成绩:").append(certificateScore.getWrittenScore());
 					}
@@ -910,5 +916,33 @@ public class WorkbookService {
 			}
 		}
 		return hssfWorkbook;
+	}
+	
+	/**
+	 * 从Excel的Cell中获取分数
+	 */
+	private double getScoreFromCell(Cell cell, List<String> msgs){
+		if(cell != null){
+			if(Cell.CELL_TYPE_NUMERIC == cell.getCellType()){
+				return cell.getNumericCellValue();
+			}else if(Cell.CELL_TYPE_STRING == cell.getCellType()){
+				String temp = cell.getStringCellValue();
+				try{
+					double score = Double.valueOf(temp);
+					
+					return score;
+				}catch(Exception e){
+					String errorMsg = "【错误】成绩：" + temp + "不是数字，导入成绩默认设置为0.0。第" + (cell.getRowIndex() + 1) + "行，第" + (cell.getColumnIndex() + 1) + "列。";
+					log.error(errorMsg);
+					if(msgs != null){
+						msgs.add(errorMsg);
+					}
+					
+					return 0.0;
+				}
+			}
+		}
+		
+		return 0.0;
 	}
 }
